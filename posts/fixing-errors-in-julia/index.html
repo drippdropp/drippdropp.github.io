@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+   <title>Null Maps</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="post_title"><a href="#post_title" class="header-anchor">Problems with Julia</a></h1>
+<h2 id="subheading"><a href="#subheading" class="header-anchor">Why I am confident that Julia is production-ready</a></h2>
+<p>Two of the most common reasons that I tend to hear regarding why people don&#39;t want to use Julia in work-related projects or in their production environments are,</p>
+<ol>
+<li><p>Julia is still a young language,</p>
+</li>
+<li><p>Julia doesn&#39;t have widespread adoption.</p>
+</li>
+</ol>
+<p>Even though I&#39;m a bit of a Julia fanboy, it&#39;s not without numerous reasons. Furthermore, among those aforementioned reasons are, in my opinion, reasons which specifically invalidate the two &quot;problems&quot; I often hear.</p>
+<h2 id="julia_is_still_a_young_language"><a href="#julia_is_still_a_young_language" class="header-anchor">Julia is still a young language</a></h2>
+<p>This is usually a compound reason since there are just a lot of things that happen <em>over time</em>. Bugs get worked out, communities grow, <em>other</em> people run into the problems we may run into and post their solutions on the web, and things just happen to improve as a whole. It&#39;s just the natural course for <em>any</em> language.</p>
+<p>That being said, it&#39;s worth noting that while I am not completely against taking risks, I tend to be fairly extensive on the mitigation side, bordering obsessive over what <em>could</em> go wrong and trying to think of ways to combat those potentials in the case they do happen to occur, even if when they seem unlikely.</p>
+<p>So why does Julia&#39;s youthfulness not bother me at all? It&#39;s because there aren&#39;t many languages which have given me as few problems as Julia with respect to version conflicts or integrating external packages and libraries.</p>
+<p>Prior to Julia hitting version 1, issues were a bit more frequent due to larger syntactical changes from release to release. As of v1.6.1, there are a few libraries I&#39;ll run across, generally for really specific, niche purposes, which are written in v0.6 or similar and haven&#39;t been updated, where I&#39;ll run into compiling issues.</p>
+<p>I&#39;ve also run into some problems compiling Julia from source on OSX, albeit I&#39;ve never had any compiling issues on any Linux flavours.</p>
+<p>Not to mention, the few issues that I have occasionally run into with Julia, have been easily fixed where I didn&#39;t even need to do any web searching, but was able to check an error log or message and make a small adjustment which got me back on track. Furthermore, I&#39;ve <em>never</em> run into any problems which created security vulnerabilities or problems which impacted the functionality or output of my code. I compare this to numerous other languages which are currently deeply engrained into the current software development landscape which have done serious damage or created vast security vulnerabilities, and sometimes <em>silently</em>.</p>
+<p>It may be a young language, but the people in the Julia community tend to be extremely talented scientists and engineers. </p>
+<p>With Julia still being fairly young and without wide adoption, often times the problems I have run into don&#39;t have easily resolvable solutions and have required a decent bit of web searching or even needing to post on Github or discourse and await a response from a fellow Julia-friendly.</p>
+<p>That all being said, I <em>rarely</em> run into problems. Even NodeJS being older than Julia and with its <em>massive</em> community and forced, non-negotiable adoption by all, I am always running into conflicts, silently created vulnerabilities, or other serious issues. With Julia, I run into a miniscule fraction of issues comparably and they are easily resolved. </p>
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: June 27, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+   <title>Null Maps</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="post_title__2"><a href="#post_title__2" class="header-anchor">Representing Graphs</a></h1>
+<p>Graphs consist of <em>nodes</em> &#40;or <em>vertices</em>&#41; connected by <em>edges</em>. If the edges are bi-directional, then we just call it a <em>graph</em>. If the edges have direction, then we call it a <em>directed graph</em> or sometimes a <em>digraph</em>. If the edges have values &#40;or <em>weights</em>&#41; associated with them, then we call it a <em>weighted graph</em> or <em>weighted digraph</em>. Finally, a graph can be <em>cyclic</em> if it&#39;s both <em>directed</em> and at least one node contains a path back to itself. If it doesn&#39;t posess that &quot;link back&quot; property, then it&#39;s called <em>acyclic</em>.</p>
+<p>In mathematical notation, we express a graph, \(G\), with a tuple which notes the number of vertices and edges,</p>
+\[ G = (V, E)\,. \]
+<p>Below is an example of <em>simple graph</em>. There are no weights or directions between nodes. Because there are no directions, we don&#39;t speak of it being cyclic.</p>
+
+<center>
+<span class="caption"><img src="/assets/graph-2.png" style="width: 50%">Figure 1: Simple Graph</span></center>
+<br>
+
+<p>While in the next example, we can see a <em>cyclic graph</em> because each edge is uni-directional and we can see that multiple nodes have paths which cycle back, e.g. \(A \rightarrow B \rightarrow D \rightarrow A\) and \(B \rightarrow C \rightarrow F \rightarrow B\).</p>
+
+<center>
+<span class="caption"><img src="/assets/graph-1.png" style="width: 50%">Figure 2: (Cyclic) Directed Graph</span></center><br>
+
+<h2 id="different_ways_to_represent_graphs__2"><a href="#different_ways_to_represent_graphs__2" class="header-anchor">Different Ways to Represent Graphs</a></h2>
+<p>In computer science, there are several ways which we can represent graphs, the most common being <em>incidence matrices</em>, <em>adjacency matrices</em>, <em>edge lists</em>, and <em>adjacency lists</em>. Choosing a representation will depend on the types of operations a specific project will be applying most frequently as there are pros and cons to each implementation.</p>
+<h3 id="incidence_matrices__2"><a href="#incidence_matrices__2" class="header-anchor">Incidence Matrices</a></h3>
+<p>WIth an incidence matrix, the rows represent <em>vertices</em>, \(V\), and the columns represent <em>edges</em>, \(E\), yielding a \(V \times E\) bit-matrix. Therefore, if we were to represent the simple matrix in figure 1, it would be a \(6 \times 10\) matrix.To apply indexing to the edges, we first need to label them.</p>
+
+<center>
+<span class="caption"><img src="/assets/graph-3.png" style="width: 50%">Figure 3: (Cyclic) Directed Graph with Labeled Edges</span></center><br>
+
+\[ \begin{bmatrix} & e_1 & e_2 & e_3 & e_4 & e_5 & e_6 & e_7 & e_8 & e_9 & e_{10}\\ 
+A & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 \\
+B & 1 & 1 & 1 & 1 & 0 & 0 & 1 & 0 & 0 & 0 \\
+C & 0 & 0 & 0 & 1 & 1 & 1 & 0 & 0 & 0 & 0 \\
+D & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 1 & 1 & 1 \\
+E & 0 & 0 & 1 & 0 & 1 & 0 & 0 & 0 & 1 & 0 \\
+F & 0 & 0 & 0 & 0 & 0 & 1 & 1 & 1 & 0 & 0 \\
+\end{bmatrix} \]
+<pre><code class="language-julia">incmat &#61; &#91;
+    1 0 0 0 0 0 0 0 0 1 ;
+    1 1 1 1 0 0 1 0 0 0 ;
+    0 0 0 1 1 1 0 0 0 0 ;
+    0 1 0 0 0 0 0 1 1 1 ;
+    0 0 1 0 1 0 0 0 1 0 ;
+    0 0 0 0 0 1 1 1 0 0 &#93;</code></pre>
+<h3 id="adjacency_matrices__2"><a href="#adjacency_matrices__2" class="header-anchor">Adjacency Matrices</a></h3>
+<p>With an <em>adjacency matrix</em> the rows and columns both represent the nodes, where a \(1\) in the \(a_{ij}\) position represents a connection from \(i\) to \(j\). Therefore for our simple graph where edges have no direction between nodes,</p>
+\[\begin{bmatrix}
+  & A & B & C & D & E & F \\
+A & 0 & 1 & 0 & 1 & 0 & 0 \\
+B & 1 & 0 & 1 & 1 & 1 & 1 \\
+C & 0 & 1 & 0 & 0 & 1 & 1 \\
+D & 1 & 1 & 0 & 0 & 1 & 1 \\
+E & 0 & 1 & 1 & 1 & 0 & 0 \\
+F & 0 & 1 & 1 & 1 & 0 & 0 \\
+\end{bmatrix}\,.\]
+<p>Notice that the matrix is symmetric. Compare this to an <em>adjacency matrix</em> for the <em>directed graph</em> version where there is direction, remember that a \(1\) in the \(a_{ij}\) component means that a connection maps from \(i\) to \(j\).</p>
+\[\begin{bmatrix}
+  & A & B & C & D & E & F \\
+A & 0 & 1 & 0 & 0 & 0 & 0 \\
+B & 0 & 0 & 1 & 1 & 1 & 1 \\
+C & 0 & 0 & 0 & 0 & 1 & 1 \\
+D & 1 & 0 & 0 & 0 & 0 & 1 \\
+E & 0 & 0 & 0 & 1 & 0 & 0 \\
+F & 0 & 1 & 0 & 0 & 0 & 0 \\
+\end{bmatrix}\]
+<h3 id="edge_lists__2"><a href="#edge_lists__2" class="header-anchor">Edge Lists</a></h3>
+<p>With <em>edge lists</em>, we simply maintain an array of tuples, each as \((i, j)\).</p>
+<pre><code class="language-julia">edgelist &#61; &#91;   
+    &#40;a, b&#41;, &#40;b, c&#41;, 
+    &#40;b, d&#41;, &#40;b, e&#41;, 
+    &#40;c, e&#41;, &#40;c, f&#41;,
+    &#40;d, a&#41;, &#40;d, f&#41;, 
+    &#40;e, d&#41;, &#40;f, b&#41;&#93;
+@show edgelist
+&gt; edgelist &#61; &#91;&#40;1, 2&#41;, &#40;2, 3&#41;, &#40;2, 4&#41;, &#40;2, 5&#41;, 
+&gt;             &#40;3, 5&#41;, &#40;3, 6&#41;, &#40;4, 1&#41;, &#40;4, 6&#41;, 
+&gt;             &#40;5, 4&#41;, &#40;6, 2&#41;&#93;</code></pre>
+<h3 id="adjacency_lists__2"><a href="#adjacency_lists__2" class="header-anchor">Adjacency Lists</a></h3>
+<p>With <em>adjacency lists</em>, for a graph with \(|V|\) vertices, there is an array with \(|V|\) elements where each element represents a vertex. For each vertex, there is an array of all its connections, or edges.</p>
+<pre><code class="language-julia">adjacencylist &#61; &#91;
+    &#91;b, d&#93;,
+    &#91;a, c, d, e, f&#93;,
+    &#91;b, e, f&#93;,
+    &#91;a, b, e, f&#93;,
+    &#91;b, c, d&#93;,
+    &#91;b, c, d&#93;&#93;
+@show adjacencylist
+&gt; adjacencylist &#61; &#91;&#91;2, 4&#93;, &#91;1, 3, 4, 5, 6&#93;, 
+&gt;                  &#91;2, 5, 6&#93;, &#91;1, 2, 5, 6&#93;, 
+&gt;                  &#91;2, 3, 4&#93;, &#91;2, 3, 4&#93;&#93;</code></pre>
+<p>To represent a directed graph with an adjacency list, we only represent connections which the vertex points to. For example, where above the first element contains <code>&#91;2, 4&#93;</code>, with our directed version we would only include <code>&#91;2&#93;</code> and the fourth element would not be <code>&#91;1, 2, 5, 6&#93;</code>, but rather <code>&#91;1, 6&#93;</code> since \(D\) points to \(A\) and \(F\).</p>
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: July 03, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

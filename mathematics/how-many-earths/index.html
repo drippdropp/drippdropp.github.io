@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+   <title>Null Maps</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="post_title__2"><a href="#post_title__2" class="header-anchor">How Many Earths</a></h1>
+<p>In Astronomy, the numbers are incredibly large and generally incomprehensible. In order to wrap our heads around these numbers, we employ a lot of comparisons and make relative references.</p>
+<p>For example, the radius of the Earth is \( R_\oplus = 6.371 \times 10^{6}\) meters, the radius of Jupiter is \( R_\text{jup} = 69.911 \times 10^{6}\) meters, and the radius of the Sun is \( R_\odot = 696.34 \times 10^{6}\) meters.</p>
+<p>We may ask the question, &quot;how many Earths will fit inside of Jupiter?&quot; as well as &quot;how many Earths will fit inside of the Sun?&quot;</p>
+<p>What are we really talking about here? We can approximate the volume of each of these objects using the formula for the volume of a sphere,</p>
+\[ V_\text{sphere} = \frac{4}{3} \pi r^3\,. \]
+<p>Plugging our radius values into \((1)\), we can compute the volumes as follows.</p>
+<p>Initially, we set our known radius constants.</p>
+<pre><code class="language-julia">const r_earth &#61; 6.371e6
+const r_jupiter &#61; 69.911e6
+const r_sol &#61; 696.</code></pre>
+<p>I&#39;ll create a helper function <code>volsphere</code> to compute the volume of a sphere given a known radius.</p>
+<pre><code class="language-julia">volsphere&#40;r::T&#41; where &#123;T&lt;:Real&#125; &#61; 4/3 * pi * r^3</code></pre>
+<p>Finally, we&#39;ll compute the known volumes of each sphere and then calculate the ratio of \(V_\text{object}\) and \(V_\oplus\) to yield the number of Earths which could fit inside each object.</p>
+<pre><code class="language-julia">&#40;v_earth, v_jupiter, v_sol&#41; &#61; map&#40;volsphere, &#91;r_earth, r_jupiter, r_sol&#93;&#41;
+
+for vol in &#91;v_jupiter, v_sol&#93;
+    @show vol / v_earth
+end
+
+&gt;  vol / v_earth &#61; 1321.3373996052212
+&gt;  vol / v_earth &#61; 1.3056934161616967e6</code></pre>
+<p>Therefore, we can see that we can fit approximately \(1,300\) Earths inside of Jupiter and we can fit approximately \(1,305,000\) Earths inside of the Sun. This is a good example of how incredibly massive these astronomical bodies are. Indeed, if an alien culture was examining our solar system, they would likely say, &quot;we&#39;ve found an unremarkable, mid-sized star, a couple of gas giants, and a bunch of rubble.&quot;</p>
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: July 16, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

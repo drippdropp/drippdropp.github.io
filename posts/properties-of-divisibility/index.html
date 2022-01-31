@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+   <title>Null Maps</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="post_title"><a href="#post_title" class="header-anchor">Properties of Divisibility</a></h1>
+<p>Suppose that \(a\) and \(b\) are non-zero integers. If there exists an integer, \(k\), such that \(b = ak\), then we say that \(a\) divides \(b\), and this is written as,</p>
+\[ a \vert b \,.\]
+<p>More generally, for integers, \(a\), \(b\), \(q\), and \(r\), if \(b\) divides \(a\), written as \(b \vert a\), then,</p>
+\[ a = bq + r\,,\]
+<p>where \(r = 0\). We use \(q\) for <em>quotient</em> and \(r\) for <em>remainder</em>. If \(r \neq 0\), then \(b\) does not divide \(a\), written as \(b \not\vert a\).</p>
+<p>For any \(a \neq 0\), \(b \neq 0\), and \(q \neq 0\), we can write any number in the form of \((2)\), e.g.</p>
+\[ 11 = 2 \cdot 5 + 1\,. \]
+<p>By the property of commutativity, we can also write \(11 = 5\cdot 2 + 1\).</p>
+<p>We call a natural number \(p\) where \(p > 1\), a <em>prime number</em> if it has exactly two distinct divisors, \(1\) and \(p\).</p>
+<blockquote>
+<p>\(0\) &#40;or <em>nullity</em>&#41; and \(1\) &#40;or <em>unity</em>&#41; are neither prime nor composite.</p>
+</blockquote>
+<p>For any prime number,</p>
+\[ 1 \vert p \text{  and  } p \vert p \,.\]
+<p>A <em>composite number</em> is any number which is <em>not</em> prime. Following from these concepts, it is true that all <em>composite</em> numbers can be written as the product of powers of primes.</p>
+<p>For any \(n\) which is composite,</p>
+\[ n = p_1^{q_1} \cdot p_2^{q_2} \cdot \cdots \cdot p_k^{q_k}\,.\]
+<p>This is called the <em>Fundamental Theorem of Arithmetic</em>.</p>
+<p>For example, the composite numbers up to \(15\) are given as, \(4, 6, 8, 9, 10, 12, 14,\) and \(15\), where,</p>
+\[\begin{aligned}
+4 &= 2^2 \\
+6 &= 2 \cdot 3 \\
+8 &= 2^3 \\
+9 &= 3^2 \\
+10 &= 2 \cdot 5 \\
+12 &= 2^2 \cdot 3 \\
+14 &= 2 \cdot 7 \\
+15 &= 3 \cdot 5 \\
+&\vdots
+\end{aligned}\]
+<p><strong>Proposition</strong>: If \(a \vert b\) and \(b \vert a\), then \(a = b\).</p>
+<p>If \(a\) and \(b\) are integers and \(a\) divides \(b\), then there exists an integer \(k_1\) such that,</p>
+\[ b = a \cdot k_1 \,,\]
+<p>where \(a\) and \(k_1\) are called <em>factors</em> or <em>divisors</em> of \(b\).</p>
+<p>If \(b\) also divides \(a\), then by \((7)\),</p>
+\[ \begin{aligned}
+a &= b \cdot k_2 \\ 
+  &= a\cdot k_1 \cdot k_2 \\
+  a - a \cdot k_1 \cdot k_2 &= 0 \\
+  a( 1 - k_1 \cdot k_2 ) &= 0
+\end{aligned}\]
+<p>By this equation, either \(a\) or \(1 - k_1 \cdot k_2\) are equal to \(0\). Since we have already determined that \(a \neq 0\) and therefore \(k_1\) and \(k_2\) are also non-zero, the product of \(k_1\) and \(k_2\) must be equal to unity. The only way that the product of \(k_1\) and \(k_2\) could be equal to unity is if either \(k_1 = k_2 = 1\) or if \(k_1 = k_2^{-1}\) and \(k_2 = k_1^{-1}\). However, if \(a \cdot k_1 = b \cdot k_2\), then it must follow that \( k_1 = k_2 = 1\) and \(a = b\).</p>
+<p><strong>Proposition</strong>: For integers \(a\), \(b\), \(d\), \(r\), and \(s\), if \(d\) divides \(a\) and \(d\) divides \(b\), then \(d\) divides \(ra + sb\).</p>
+<p>Since \(d\) divides both \(a\) and \(b\), there must exists integers \(k_1\) and \(k_2\) such that \(a = dk_1\) and \(b = dk_2\).</p>
+<p>Therefore, \(ra + sb = r d k_1 + s d k_2 = d(r k_1 + s k_2)\) and so \(d\) divides \(ra + sb\).</p>
+<p>Furthermore, since \(d\) divides both \(a\) and \(b\), then \(d\) also divides \(a + b\), \(a - b\), \(ra\), and \(sb\).</p>
+<p><strong>Proposition</strong>: Suppose \(a\), \(b\), and \(c\) are integers, \(a\) divides \(b\) if and only if \(ac\) divides \(bc\).</p>
+<p>If \(ac\) divides \(bc\), then \(bc = ac\cdot k_1\) where \(ac\) and \(k_1\) are factors of \(bc\). By the law of cancellation, it must be that \(b = a\cdot k_1\).</p>
+<p><strong>Proposition</strong>: If \(a\) divides \(b\) and \(b\) divides \(c\), then \(a\) divides \(c\). This is what we call transitivitiy.</p>
+<p>If \(a\) divides \(b\), then there exists some \(k_1\) such that \(b = a \cdot k_1\) and if \(b\) divides \(c\), there exists some \(k_2\) such that \(c = b\cdot k_2\). It therefore follows that,</p>
+\[ c = b\cdot k_2 = (a\cdot k_1) \cdot k_2\,. \]
+<p>By the law of associativity, it&#39;s clear that \(a\) divides \(c\).</p>
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: July 17, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

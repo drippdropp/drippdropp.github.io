@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+   <title>Null Maps</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="post_title__2"><a href="#post_title__2" class="header-anchor">Metric Tensors</a></h1>
+<p>When working with General Relativity, we naturally need to work with tensors. Fortunately, we can easily represent the metric, \(g_{uv}\), stress, and energy tensors using the <code>Tensors</code> package along with <code>SymPy</code> and <code>LinearAlgebra</code>.</p>
+<p>Recall that a metric in general is essentially a kind of map we can use to determine how a coordinate system should be laid out.</p>
+<blockquote>
+<p>The convention in GR, and more specifically when using Einstein summation notation, is to write the indices of contravariant vectors as superscripts and the indices of covariant vectors as subscripts. Read my posts on <a href="/posts/contravariant-vs-covariant/">contravariant vs. covariant vectors</a> and <a href="/posts/einstein-summation-notation/">Einstein summation notation</a> for a more in-depth treatment of each topic.</p>
+</blockquote>
+<p>Starting from flatspace, we&#39;ll using the Pythagorean theorem and construct a metric tensor of rank 2.</p>
+\[ds^2 = (dx^1)^2 + (dx^2)^2\]
+<p>For a tensor transformation from the \(X\) frame of reference to the \(Y\) frame of reference, we can use the following equation as a guide,</p>
+\[ \boxed{dX^m = \frac{\partial X^m}{\partial Y^r} dY^r}\,.\]
+<p>Applying \((2)\) to a transformation of \((1)\) will yield,</p>
+\[\begin{aligned} ds^2 &= \delta_{mn} \frac{\partial X^m}{\partial Y^r} \frac{\partial X^n}{\partial Y^s} dY^r dY^s \\
+&= g_{rs}dY^r dY^s
+\,.\end{aligned}\]
+<p>Before jumping to the metric tensor, \(g_{ij}\), where \(i\) and \(j\) are indices, I think it&#39;s a little easier to understand from the perspective of using the Kronecker delta.</p>
+<p>Looking at \((1)\), we can see that we want to square the \(dx^1\) and \(dx^2\) terms. Furthermore, there are no terms with the product of \(dx^1\) and \(dx^2\), only \(dx^1\cdot dx^1\) and \(dx^2\cdot dx^2\).</p>
+<p>Therefore, when \(m = n = 1\), we will be squaring the \(dx^1\) component and when \(m = n = 2\), we will be squaring the \(dx^2\) component. Since the Kronecker delta function returns \(0\) when \(m\) and \(n\) are different, whenever \(m \neq n\), those terms map to nullity. Therefore, the \(g_{11}\) term is \(1\), the \(g_{22}\) term is \(1\) and the \(g_{12} = g_{21}\) term is \(0\).</p>
+<p>In matrix form this is written as,</p>
+\[\begin{bmatrix} g_{11} & g_{12} \\ g_{21} & g_{22} \end{bmatrix}\,.\]
+<p>To re-iterate the result with the coefficients emphasized, the metric is given by,</p>
+\[ ds^2 = (1)(dx^1)^2 + (0)dx^1 dx^2 + (1)(dx^2)^2\,.\]
+<p>Using the <code>Tensors</code> package, we can quickly construct a metric tensor for computation. We can use the <code>Tensor</code> or <code>SymmetricTensor</code> constructors. In either case we need to specify the tensor rank, the dimensions, and datatype.</p>
+<pre><code class="language-julia">Tensor&#123;2, 2, Int&#125;&#40;&#91;1 0 ; 0 1&#93;&#41;</code></pre>
+<p>We want a tensor of rank \(2\) with \(2\) dimensions, and a bit or numeric data type since we&#39;re working with \(0\)s and \(1\)s. In the example above, I specified the rank, dimension, and data type and then passed in a matrix of the form shown in \((4)\). Another option would be to use the <code>SymmetricTensor</code> constructor. The difference here is that we are explicitly stating that our \(g_{12}\) and \(g_{21}\) terms are identical, thereby forming a symmetric matrix, so we can use the following syntax.</p>
+<pre><code class="language-julia">using Tensors, LinearAlgebra
+
+g_cart &#61; SymmetricTensor&#123;2, 2, Int&#125;&#40;&#40;1, 0, 1&#41;&#41;
+&gt;  2×2 SymmetricTensor&#123;2, 2, Int64, 3&#125;:
+&gt;   1  0
+&gt;   0  1</code></pre>
+<p>It&#39;s also worth noting that because of the symmetry here, we&#39;re only storing \(3\) data points instead of \(4\). While that&#39;s unlikely to make any difference with a \(2-2\) tensor &#40;\(2\) rank, \(2\) dimensional&#41;, it could offer improvements with higher-dimensional tensors.</p>
+<h3 id="transforming_the_metric_tensor_to_other_coordinate_systems__2"><a href="#transforming_the_metric_tensor_to_other_coordinate_systems__2" class="header-anchor">Transforming the Metric Tensor to Other Coordinate Systems</a></h3>
+<p>We&#39;ll take it a step further. Let&#39;s perform a transformation from rectilinear coordinates to polar coordinates.</p>
+<p>We&#39;ll need to leverage the following mappings,</p>
+\[\begin{aligned}
+x &= r\cos\theta \\
+y &= r\sin\theta \,.
+\end{aligned}\]
+<p>When we differentiate both \(x\) and \(y\), we need to remember to use the chain rule since \(r\) is a function of \(\theta\).</p>
+\[ dx = \cos{\theta}\ dr - r\sin{\theta}\ d\theta\]
+\[ dy = \sin{\theta}\ dr + r\cos{\theta}\ d\theta\]
+<p>Plugging \((7)\) and \((8)\) back into \((1)\), expanding out, and collecting like terms yields the algebraical intensive but conceptually straight-forward,</p>
+\[\begin{aligned} ds^2 &= (\cos{\theta}\ dr - r\sin{\theta}\ d\theta)(\cos{\theta}\ dr - r\sin{\theta}\ d\theta) + (\sin{\theta}\ dr + r\cos{\theta}\ d\theta)(\sin{\theta}\ dr + r\cos{\theta}\ d\theta) \\
+&= \cos^2\theta dr^2 - 2r\sin\theta\cos\theta dr\ d\theta + r^2\sin^2\theta d\theta^2 + \sin^2\theta dr^2 + 2r\sin\theta\cos\theta dr\ d\theta + r^2\cos^2\theta d\theta^2 \\
+&= \cos^2\theta dr^2 + \sin^2\theta dr^2 + r^2\sin^2\theta d\theta^2 + r^2\cos^2\theta d\theta^2 \\
+&= (\cos^2\theta + \sin^2\theta) dr^2 + r^2(\sin^2\theta + \cos^2\theta) d\theta^2 \\
+&= (1)dr^2 + (0)drd\theta + (r^2)d\theta^2\,. 
+\end{aligned}\]
+<blockquote>
+<p>Note that above we used the trigonometric identity \(\cos^2(\theta) + \sin^2(\theta) = 1\).</p>
+</blockquote>
+<p>Now that we have simplified \(ds^2\) to \(dr^2 + r^2 d\theta^2\), we can construct our metric tensor of flatspace in polar coordinates.</p>
+\[\begin{aligned} 
+g_{rr} &= 1 \\
+g_{r\theta} &= g_{\theta r} = 0 \\
+g_{\theta\theta} &= r^2
+\end{aligned}\]
+<p>We could use functions here or represent the metric in a few other ways, but we&#39;ll leverage the excellent <code>SymPy</code> package and construct a symbolic tensor using the values from \((10)\).</p>
+<pre><code class="language-julia">using SymPy, LinearAlgebra, Tensors
+
+@vars r θ
+
+g_polar &#61; SymmetricTensor&#123;2, 2, Sym&#125;&#40;&#40;1, 0, r^2&#41;&#41;</code></pre>
+<p><code>g_polar</code> yields a symbolic tensor of the form,</p>
+\[\begin{bmatrix} 1 & 0 \\ 0 & r^2 \end{bmatrix}\,.\]
+<h3 id="metric_tensor_using_spherical_coordinates__2"><a href="#metric_tensor_using_spherical_coordinates__2" class="header-anchor">Metric Tensor Using Spherical Coordinates</a></h3>
+<p>While I won&#39;t go through the full derivation here, it&#39;s worth offering the concrete example of how we create a tensor of rank \(2\) and dimension \(3\) constructed with the <code>diagm</code> function from the <code>LinearAlgebra</code> package.</p>
+<p>After working through some extensive algebra, we will find ourselves with \(ds^2\) in spherical coordinates,</p>
+\[ ds^2 = (1)dr^2 + (r^2)d\phi^2 + (r^2 \sin^2\theta)d\theta^2 \,.\]
+<pre><code class="language-julia">using SymPy, LinearAlgebra, Tensors
+
+@vars r θ ϕ
+
+g_spherical &#61; Tensor&#123;2, 3, Sym&#125;&#40;diagm&#40;&#91;1, r^2, r^2*sin&#40;θ&#41;^2&#93;&#41;&#41;</code></pre>
+<p>Notice that since we are working in dimension \(3\), we&#39;ve changed the initial directive to \(2\) for rank \(2\), \(3\) for dimension \(3\), and once again we&#39;re using \(Sym\) to leverage <code>SymPy</code> objects. Passed in as an argument is the output of the <code>diagm</code> function which constructs a diagonal matrix. For a \(3 \times 3\) matrix, <code>diagm</code> will expect a vector with \(3\) elements as shown above. More generally, for any \(n \times n\) matrix, it will expect a vector with \(n\) elements.</p>
+<p>The assignment of <code>g_spherical</code> displays as,</p>
+\[\begin{bmatrix*}[c] 1 & 0 & 0 \\ 0 & r^2 & 0 \\ 0 & 0 & r^2 \sin^2(\theta) \end{bmatrix*}\,.\]
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: July 19, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

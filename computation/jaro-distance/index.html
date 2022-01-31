@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+   <title>Null Maps</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="post_title__2"><a href="#post_title__2" class="header-anchor">Jaro Distance</a></h1>
+<pre><code class="language-julia">function jaro_distance&#40;s1::String, s2::String&#41;::Float64
+    s1 &#61;&#61; s2 &amp;&amp; return 1.0f0
+    &#40;m, n&#41; &#61; length&#40;s1&#41;, length&#40;s2&#41;
+    &#40;m &#61;&#61; zero&#40;Int&#41; || n &#61;&#61; zero&#40;Int&#41;&#41; &amp;&amp; return 0.0f0
+    
+    maxdist &#61; div&#40;max&#40;m, n&#41;, 2&#41; - 1
+    match &#61; 0
+    hash_s1 &#61; zeros&#40;Int, m, 1&#41;
+    hash_s2 &#61; zeros&#40;Int, n, 1&#41;
+    
+    for i in 1:m
+        for j in max&#40;1, i - maxdist&#41;:min&#40;n, i &#43; maxdist &#43; 1&#41;
+            if s1&#91;i&#93; &#61;&#61; s2&#91;j&#93; &amp;&amp; hash_s2&#91;j&#93; &#61;&#61; 0
+                hash_s1&#91;i&#93; &#61; hash_s2&#91;j&#93; &#61; one&#40;Int&#41;
+                match &#43;&#61; 1
+                break
+            end
+        end
+    end
+    
+    match &#61;&#61; 0 &amp;&amp; return 0.0f0
+    
+    t &#61; zero&#40;Int&#41;;
+    point &#61; one&#40;Int&#41;;
+    
+    for i in 1:m
+        if hash_s1&#91;i&#93; &gt; 0
+            while hash_s2&#91;point&#93; &#61;&#61; 0
+                point &#43;&#61; 1
+            end
+            if s1&#91;i&#93; &#33;&#61; s2&#91;point&#93;
+                point &#43;&#61; 1
+                t &#43;&#61; 1
+            else
+                point &#43;&#61; 1
+            end
+        end
+        t /&#61; 2
+    end
+    
+    return &#40;&#40;match/m &#43; match/n &#43; &#40;match-t&#41;/match&#41; / 3.0&#41;
+end</code></pre>
+<h2 id="jaro-winkler__2"><a href="#jaro-winkler__2" class="header-anchor">Jaro-Winkler</a></h2>
+<pre><code class="language-julia">function jaro_winkler&#40;s1::String, s2::String&#41;
+    jaro_dist &#61; jaro_distance&#40;s1, s2&#41;
+    
+    if &#40;jaro_dist &gt; 0.7&#41;
+        prefix &#61; 0;
+        for i in 1:min&#40;length&#40;s1&#41;, length&#40;s2&#41;&#41;
+            if s1&#91;i&#93; &#61;&#61; s2&#91;i&#93;
+                prefix &#43;&#61; 1
+            else
+                break
+            end
+        end
+        prefix &#61; min&#40;4, prefix&#41;
+        jaro_dist &#43;&#61; 0.1 * prefix * &#40;1 - jaro_dist&#41;
+    end
+    return jaro_dist
+end</code></pre>
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: June 20, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

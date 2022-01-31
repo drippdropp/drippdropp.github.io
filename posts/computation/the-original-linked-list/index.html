@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+  <title>Null Maps</title>
+</head>
+<body>
+<div class="sidebar sidebar-bg">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="post_title"><a href="#post_title" class="header-anchor">The Original LinkedList</a></h1>
+<p>One of the simplest data structures is the <em>linked list</em>.</p>
+<p>It consists of a collection of individual nodes, each containing a value of type, <strong>T</strong>, and a pointer to the next node. The last node&#39;s pointer is a null pointer.</p>
+<p><img src="/assets/linkedlist-diagram.png" alt="" /></p>
+<p>In C, we would define each Node in the following way.</p>
+<pre><code class="language-c">struct Node &#123;
+	int data;
+	struct Node *next;
+&#125;</code></pre>
+<p>We&#39;ll roll our own in Julia for the sake of outlining the fundamentals. Initially, we&#39;ll define <code>EmptyNode</code> to represent a pointer to an empty node. Also, in order to leverage the <code>isnothing</code> method, we import <code>Base.isnothing</code> and implement a method where the argument is anything with a type of <code>EmptyNode</code>.</p>
+<pre><code class="language-julia">struct EmptyNode end
+
+import Base.isnothing
+Base.isnothing&#40;::EmptyNode&#41; &#61; true</code></pre>
+<p>Next we implement the <code>Node</code> struct, using generic type of <code>T</code> to allow more flexibility. Each struct, contains a <code>val</code> field of type <code>T</code>and a <code>next</code> field of type <code>Union&#123;EmptyNode, Node&#123;T&#125;&#125;</code>. We&#39;ll also define an inner constructor so we can pass in a value and it will create a new <code>Node</code> with the value and pointing to an <code>EmptyNode</code>.</p>
+<pre><code class="language-julia">mutable struct Node&#123;T&#125;
+    val::T
+    next::Union&#123;EmptyNode, Node&#123;T&#125;&#125;
+
+    Node&#40;v::T&#41; where &#123;T&#125; &#61; new&#123;T&#125;&#40;v, EmptyNode&#40;&#41;&#41;
+end</code></pre>
+<p>We&#39;ll also define another struct called <code>LinkedList</code> which will act as a wrapper for the collection of nodes. We&#39;ll also define two outer contructors, one which accepts a single value of type <code>T</code> and another which accepts a node of type <code>Node&#123;T&#125;</code>.</p>
+<pre><code class="language-julia">struct LinkedList&#123;T&#125;
+    root::Node&#123;T&#125;
+end
+
+function LinkedList&#40;v::T&#41; where &#123;T&#125;
+    LinkedList&#123;T&#125;&#40;Node&#40;v&#41;&#41;
+end
+
+function LinkedList&#40;node::Node&#123;T&#125;&#41; where &#123;T&#125;
+    LinkedList&#123;T&#125;&#40;node&#41;
+end</code></pre>
+<p>Now we want to define some operations so we can, you know, actually do some stuff with these linked lists.</p>
+<p>We&#39;ll define <code>addnode&#33;</code> which will iterate over the nodes until we find an empty one at which point we will replace the <code>EmptyNode</code> object with a <code>Node</code> object containing a value we are adding.</p>
+<pre><code class="language-julia">function addnode&#33;&#40;lst::LinkedList, v::T&#41; where &#123;T&#125;
+    node &#61; lst.root
+    while &#33;isnothing&#40;node.next&#41;
+        node &#61; node.next
+    end
+    node.next &#61; Node&#40;v&#41;;
+end</code></pre>
+<p>Next, we will often want to know how many elements are in a list, so we&#39;ll define <code>length</code> which follows a similar approach as <code>addnode&#33;</code> but we initially define a count and then with each iteration we increment the count. Once we reach an <code>EmptyNode</code>, then we&#39;ll return the count.</p>
+<pre><code class="language-julia">function length&#40;lst::LinkedList&#41;
+    node &#61; lst.root
+    ncount &#61; 1
+    while &#33;isnothing&#40;node.next&#41;
+        node &#61; node.next
+        ncount &#43;&#61; 1
+    end
+    return ncount
+end</code></pre>
+<p>Another thing we&#39;ll often want to know is if a particular value is in the collection or not, so we&#39;ll define <code>in</code>. We&#39;ll iterate over each node and return <code>true</code> if we find a value match. If we reach the end, then we return <code>false</code>.</p>
+<pre><code class="language-julia">function in&#40;val::T, lst::LinkedList&#41; where &#123;T&#125;
+    node &#61; lst.root
+    node.val &#61;&#61; val &amp;&amp; return true
+    while &#33;isnothing&#40;node.next&#41;
+        if node.next.val &#61;&#61; val
+            return true
+        end
+        node &#61; node.next
+    end
+    return false
+end</code></pre>
+<p>The linked list is one of the most fundamental structures in functional programming and they are often manipulated using <code>head</code> and <code>tail</code> functions, so we&#39;ll define both of these. <code>head</code> simply returns the first value and <code>tail</code> returns a <code>LinkedList</code> object where the second <code>Node</code> becomes the root.</p>
+<pre><code class="language-julia">function head&#40;lst::LinkedList&#41;
+    return lst.root.val
+end
+
+function tail&#40;lst::LinkedList&#41;
+    return LinkedList&#40;lst.root.next&#41;
+end</code></pre>
+<p>When we&#39;re working with numeric values, we may want to quickly take the sum or product of all nodes, so we&#39;ll also define <code>sum</code> and <code>prod</code> functions.</p>
+<pre><code class="language-julia">function sum&#40;lst::LinkedList&#123;T&#125;&#41; where &#123;T &lt;: Real&#125;
+    node &#61; lst.root
+    result &#61; node.val
+    while &#33;isnothing&#40;node.next&#41;
+        result &#43;&#61; node.next.val
+        node &#61; node.next
+    end
+    return result
+end
+
+function prod&#40;lst::LinkedList&#123;T&#125;&#41; where &#123;T &lt;: Real&#125;
+    node &#61; lst.root
+    result &#61; node.val
+    while &#33;isnothing&#40;node.next&#41;
+        result *&#61; node.next.val
+        node &#61; node.next
+    end
+    return result
+end</code></pre>
+<pre><code class="language-julia">@testset &quot;LinkedList Operations&quot; begin
+    lst &#61; LinkedList&#40;4&#41;
+    @test lst isa LinkedList
+    @test lst.root.val &#61;&#61; 4
+    
+    addnode&#33;&#40;lst, 6&#41;
+    @test lst.root.next.val &#61;&#61; 6
+
+    addnode&#33;&#40;lst, -4&#41;
+    addnode&#33;&#40;lst, 23&#41;
+    @test length&#40;lst&#41; &#61;&#61; 4
+
+    @test &#40;4 in lst&#41; &#61;&#61; true
+    @test &#40;6 in lst&#41; &#61;&#61; true
+    
+    @test head&#40;lst&#41; &#61;&#61; 4
+    @test head&#40;tail&#40;lst&#41;&#41; &#61;&#61; 6
+    
+    @test sum&#40;lst&#41; &#61;&#61; &#40;4 &#43; 6 &#43; -4 &#43; 23&#41;
+    
+    lst2 &#61; LinkedList&#40;1&#41;
+    addnode&#33;&#40;lst2, 2&#41;
+    addnode&#33;&#40;lst2, 3&#41;
+    addnode&#33;&#40;lst2, 10&#41;
+    @test prod&#40;lst2&#41; &#61;&#61; 60
+end
+
+&gt; Test Summary:         | Pass  Total
+&gt; LinkedList Operations |   10     10</code></pre>
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: July 03, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        
+
+
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

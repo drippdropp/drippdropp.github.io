@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+   <title>Null Maps</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="post_title"><a href="#post_title" class="header-anchor">Sum of Elements in an Array</a></h1>
+<p>Suppose we generate an array of \(500\) elements and look at the sums made by adjacent items. Then we build a frequency dictionary and look at how many ways we are able to </p>
+<pre><code class="language-julia">@time begin
+    X &#61; &#91; rand&#40;0:100&#41; for _ in 1:500 &#93;
+
+    p1 &#61; 1
+    p2&#40;p, windowsize&#41; &#61; p &#43; windowsize
+    fhist &#61; Dict&#123;Int64, Int64&#125;&#40;&#41;
+
+    for ws in 1:&#40;length&#40;X&#41;-1&#41;
+        for p in 1:&#40;length&#40;X&#41;-ws&#41;
+            lo &#61; p
+            hi &#61; p2&#40;p, ws&#41;
+
+            s &#61; X&#91;lo:hi&#93; |&gt; sum
+            if haskey&#40;fhist, s&#41;
+                fhist&#91;s&#93; &#43;&#61; 1
+            else
+                fhist&#91;s&#93; &#61; 1
+            end
+        end
+    end
+
+    bar&#40;&#91;keys&#40;fhist&#41;...&#93;, &#91;values&#40;fhist&#41;...&#93;&#41;
+end</code></pre>
+<p><img src="/assets/sums-plot.png" alt="" /></p>
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: June 29, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

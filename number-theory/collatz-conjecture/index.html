@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+   <title>Null Maps</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="post_title__2"><a href="#post_title__2" class="header-anchor">Collatz Conjecture</a></h1>
+<p>The <a href="https://en.wikipedia.org/wiki/Collatz_conjecture">Collatz conjecture</a> is an unsolved problem in number theory where a sequence is constructed from iteratively applying \(f(n)\), such that, </p>
+\[f(n) = \begin{cases}
+\frac{n}{2} & \text{if } n \equiv 0 \pmod{2} \\
+3n + 1  & \text{if }n \equiv 1 \pmod{2}\,.
+\end{cases}\]
+<p>The <em>conjecture</em> poses the question, that regardless of the starting integer, \(n\), the sequence will always conclude with \(1\).</p>
+<pre><code class="language-julia">using DataStructures
+
+function collatz&#40;n&#41;
+    n &#61;&#61; 1 &amp;&amp; return nothing
+    isodd&#40;n&#41; ? 3n&#43;1 : div&#40;n, 2&#41;
+end
+
+function collatzchain&#40;k&#41;
+    chain &#61; Int&#91;&#93;
+    while &#33;isnothing&#40;k&#41;
+        push&#33;&#40;chain, k&#41;
+        k &#61; collatz&#40;k&#41;
+    end
+    return chain
+end
+
+chaindict &#61; OrderedDict&#123;Int, Vector&#123;Int&#125;&#125;&#40;&#41;
+@time @async for k in 1:100_000
+    chaindict&#91;k&#93; &#61; collatzchain&#40;k&#41;
+end
+
+chaindict
+
+&gt;   0.000037 seconds &#40;32 allocations: 2.188 KiB&#41;
+&gt;
+&gt; OrderedDict&#123;Int64, Vector&#123;Int64&#125;&#125; with 100000 entries:
+&gt;   1  &#61;&gt; &#91;1&#93;
+&gt;   2  &#61;&gt; &#91;2, 1&#93;
+&gt;   3  &#61;&gt; &#91;3, 10, 5, 16, 8, 4, 2, 1&#93;
+&gt;   4  &#61;&gt; &#91;4, 2, 1&#93;
+&gt;   5  &#61;&gt; &#91;5, 16, 8, 4, 2, 1&#93;
+&gt;   6  &#61;&gt; &#91;6, 3, 10, 5, 16, 8, 4, 2, 1&#93;
+&gt;   7  &#61;&gt; &#91;7, 22, 11, 34, 17, 52, 26, 13, 40, 20, 10, 5, 16, 8, 4, 2, 1&#93;
+&gt;   8  &#61;&gt; &#91;8, 4, 2, 1&#93;
+&gt;   9  &#61;&gt; &#91;9, 28, 14, 7, 22, 11, 34, 17, 52, 26, 13, 40, 20, 10, 5, 16, 8, 4, 2, …
+&gt;   10 &#61;&gt; &#91;10, 5, 16, 8, 4, 2, 1&#93;
+&gt;   11 &#61;&gt; &#91;11, 34, 17, 52, 26, 13, 40, 20, 10, 5, 16, 8, 4, 2, 1&#93;
+&gt;   12 &#61;&gt; &#91;12, 6, 3, 10, 5, 16, 8, 4, 2, 1&#93;
+&gt;   13 &#61;&gt; &#91;13, 40, 20, 10, 5, 16, 8, 4, 2, 1&#93;
+&gt;   14 &#61;&gt; &#91;14, 7, 22, 11, 34, 17, 52, 26, 13, 40, 20, 10, 5, 16, 8, 4, 2, 1&#93;
+&gt;   15 &#61;&gt; &#91;15, 46, 23, 70, 35, 106, 53, 160, 80, 40, 20, 10, 5, 16, 8, 4, 2, 1&#93;
+&gt;   16 &#61;&gt; &#91;16, 8, 4, 2, 1&#93;
+&gt;   17 &#61;&gt; &#91;17, 52, 26, 13, 40, 20, 10, 5, 16, 8, 4, 2, 1&#93;
+&gt;   18 &#61;&gt; &#91;18, 9, 28, 14, 7, 22, 11, 34, 17, 52  …  13, 40, 20, 10, 5, 16, 8, 4, …
+&gt;   19 &#61;&gt; &#91;19, 58, 29, 88, 44, 22, 11, 34, 17, 52  …  13, 40, 20, 10, 5, 16, 8, 4…
+&gt;   20 &#61;&gt; &#91;20, 10, 5, 16, 8, 4, 2, 1&#93;
+&gt;   21 &#61;&gt; &#91;21, 64, 32, 16, 8, 4, 2, 1&#93;
+&gt;   22 &#61;&gt; &#91;22, 11, 34, 17, 52, 26, 13, 40, 20, 10, 5, 16, 8, 4, 2, 1&#93;
+&gt;   23 &#61;&gt; &#91;23, 70, 35, 106, 53, 160, 80, 40, 20, 10, 5, 16, 8, 4, 2, 1&#93;
+&gt;   24 &#61;&gt; &#91;24, 12, 6, 3, 10, 5, 16, 8, 4, 2, 1&#93;
+&gt;   25 &#61;&gt; &#91;25, 76, 38, 19, 58, 29, 88, 44, 22, 11  …  13, 40, 20, 10, 5, 16, 8, 4…
+&gt;   ⋮  &#61;&gt; ⋮</code></pre>
+<p>It appears that the sequence will always conclude with \(4, 2, 1\), but a definitive proof continues to elude mathematicians.</p>
+<p>Since it appears that every sequence likely <em>will</em> conclude with the numbers \(4, 2, 1\), I&#39;ll modify the code to focus on checking the last three elements of each <em>collatz chain</em>.</p>
+<pre><code class="language-julia">@time @async for k in 1:10_000_000
+    if collatzchain&#40;k&#41;&#91;end&#93; &#33;&#61; 1
+        println&#40;k&#41;
+    end
+end
+
+&gt;   0.000039 seconds &#40;34 allocations: 2.325 KiB&#41;
+&gt;
+&gt;  Task &#40;done&#41; @0x00000001b4cc5660</code></pre>
+<p>Well, at least the first ten million collatz chains all conclude with \(1\). We&#39;ll have to adjust the code if we want to check more than \(10^6\) chains since too many threads can be counter-productive and we definitely want to leverage parallelism for this task.</p>
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: June 26, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

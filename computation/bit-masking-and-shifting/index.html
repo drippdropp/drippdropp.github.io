@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+   <title>Null Maps</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="post_title__2"><a href="#post_title__2" class="header-anchor">Bit Masking and Shifting</a></h1>
+<p>Often times we want to apply search algorithms to images. In order to do this, we first need to read the image data into a multi-dimensional array &#40;or matrix&#41; and split the RGBA values into the numeric representations.</p>
+<pre><code class="language-julia">using Images, ImageIO, Colors
+
+const imgpath &#61; &quot;/local/usr/starimage.png&quot;;
+
+img &#61; load&#40;imgpath&#41;;
+imgbits &#61; reinterpret&#40;UInt32, img&#41;;</code></pre>
+<p>Each pixel is an unsigned 32-bit integer in hexadecimal, e.g. <code>0xff0b0c0e</code>.</p>
+<p>Julia makes it easy to extract packed values using the <code>reinterpret</code> function. </p>
+<pre><code class="language-julia">reinterpret&#40;UInt8, &#91;imgbits&#91;1,1&#93;&#93;&#41;
+
+&gt; 4-element reinterpret&#40;UInt8, ::Vector&#123;UInt32&#125;&#41;:
+&gt;  0x0e
+&gt;  0x0c
+&gt;  0x0b
+&gt;  0xff</code></pre>
+<p>Notice that not only did it reverse the order of the bits, but it split the 32-bit integer into four 8-bit integers which perfectly associate to red, green, blue, and alpha.</p>
+<p>We can also do this manually by applying a &quot;mask and shift&quot; approach. I&#39;ll write a function which maps over an array of tuples, where each tuple contains a bitmask and a shift amount.</p>
+<pre><code class="language-julia">bitmasks &#61; &#91;0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000&#93;
+bitshifts &#61; &#91;0, 8, 16, 24&#93;
+
+bitcontext &#61; zip&#40;bitmasks, bitshifts&#41; |&gt; collect
+&gt; 4-element Vector&#123;Tuple&#123;UInt32, Int64&#125;&#125;:
+&gt;  &#40;0x000000ff, 0&#41;
+&gt;  &#40;0x0000ff00, 8&#41;
+&gt;  &#40;0x00ff0000, 16&#41;
+&gt;  &#40;0xff000000, 24&#41;</code></pre>
+<p>Next I&#39;ll write a function which will iterate over the <code>bitcontext</code> tuples, first applying the bitmask and then shifting by the number of bits specified.</p>
+<pre><code class="language-julia">function extractpixel&#40;pix&#41;
+    map&#40;x -&gt; UInt8&#40;&#40;pix &amp; x&#91;1&#93;&#41; &gt;&gt; x&#91;2&#93;&#41;, bitcontext&#41;
+end</code></pre>
+<p>We first perform a bit and operation between <code>0xff0b0c0e</code> and <code>0x000000ff</code> which yields <code>0x0000000e</code>. We finally shift it by \(0\) since we&#39;re already in the lowest bit position.</p>
+<p>In general though, we will perform a bit and operation followed by a shift.</p>
+<p><code>&#40;0xff0b0c0e &amp; 0x00ff0000&#41;</code> will yield <code>0x000b0000</code>. But we want the <code>0b</code> moved to the right-most position, so we need to shift by \(16\) bits, <code>0x000b0000 &gt;&gt; 16</code>.</p>
+<pre><code class="language-julia">extractpixel&#40;imgbits&#91;1,1&#93;&#41;
+&gt; 4-element Vector&#123;UInt8&#125;:
+&gt;  0x0e
+&gt;  0x0c
+&gt;  0x0b
+&gt;  0xff</code></pre>
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: June 26, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+   <title>Null Maps</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="post_title__2"><a href="#post_title__2" class="header-anchor">Minimum Paths</a></h1>
+<p>Suppose we have a graph as shown below.</p>
+<p><img src="/assets/simpleweightdigraph-fig.png" alt="" /></p>
+<p>When we are calculating paths, we simply choose our traversal points and add up the weights.</p>
+<p>For example, we compute all of the paths which move us from \(A\) back to itself.</p>
+\[A \rightarrow B \rightarrow C \rightarrow E \rightarrow A  = 0.5 + 1.2 + 1.1 + 0.5 = 3.3 \]
+\[A \rightarrow B \rightarrow D \rightarrow A  = 0.5 + 0.8 + 0.9 = 2.2 \]
+\[A \rightarrow B \rightarrow D \rightarrow E \rightarrow A  = 0.5 + 0.8 + 0.3 + 0.5 = 2.1 \]
+<p>We may have intuitively thought that \(A\) to \(B\) to \(D\) to \(A\) was the shorter path since it contains fewer nodes, but infact \(A\) to \(B\) to \(D\) to \(E\) to \(A\) is the shortest path with a total value of \(2.1\) compared to \(2.2\).</p>
+<h3 id="applications__2"><a href="#applications__2" class="header-anchor">Applications</a></h3>
+<p>A concrete application is in the traffic direction software in GoogleMaps or Waze.</p>
+<p>While I&#39;m not sure of how each of these specific apps have been implemented, the way that I would implement something similar would be to first create a representation of the terrain, specifically roadways. We would keep it pretty simple, roads are edges, and where ever a road happens to split or crosses with another road is a node. The next thing we would need to do is determine the weights of each individual edge.</p>
+<p>At first, I imagine that these apps simply computed weights with a formula which would incorporate distances between nodes and possibly roadway designations, meaning certain main roads, thoroughfares, and roads through business districts will naturally be more busy during certain periods of the day while residential roads, country roads, and so forth, will have less activity. However, over time, as people are regularly using the app, they can collect massive amounts of data such as the average vehicle speed during various time periods between nodes. The formula therefore becomes more complex, but can then utilize Bayesian inference and other statistical tools to iterativelly improve the edge weights.</p>
+<p>Once we have a proper <em>cyclical, weight, digraph</em>, then determining shortest paths and similar is as simple as applying well known algorithms for computing minimum spanning trees, Dijkstra&#39;s algorithm, etc.</p>
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: July 03, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

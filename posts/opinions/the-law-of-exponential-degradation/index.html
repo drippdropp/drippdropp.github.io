@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+  <title>Null Maps</title>
+</head>
+<body>
+<div class="sidebar sidebar-bg">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="post_title"><a href="#post_title" class="header-anchor">The Law of Exponential Degradation</a></h1>
+<p>Modern developers, especially those without much of a mathematical background or those who have experience exclusively with modern languages like JavaScript and PHP, tend to write sloppy code without even realizing it.</p>
+<p>More specifically, they tend to fully take advantage of the fact that modern computers are really fast without considering a concept that I&#39;ve come to call <em>the Law of Exponential Degradation</em>. This means that a developer can make one bad decision or two bad decisions throughout their work on a particular project and not experience much of an impact. However, as they continue to make poor code choices, the impact to the project grows exponentially.</p>
+<p>Let&#39;s look at something as simple as computing a polynomial. Suppose we have a polynomial of degree <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn></mrow><annotation encoding="application/x-tex">3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">3</span></span></span></span> such as <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><msup><mi>x</mi><mn>3</mn></msup><mo>−</mo><mn>6</mn><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mn>2</mn><mi>x</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">2x^3 - 6x^2 + 2x - 1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.897438em;vertical-align:-0.08333em;"></span><span class="mord">2</span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.897438em;vertical-align:-0.08333em;"></span><span class="mord">6</span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">2</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span> and we want to evaluate it at <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>=</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">x = 3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">3</span></span></span></span>.</p>
+<p>If we&#39;re only going to compute this once, it probably doesn&#39;t necessarily make sense to write a function for it, so suppose we decide to compute it inline and we leverage the typical operations like multiplication and using powers.</p>
+<pre><code class="language-julia"># using multiplications and powers -- inline/fastmath
+@btime 2x^3 - 6x^2 &#43; 2x - 1
+&gt; 100.768 ns &#40;0 allocations: 0 bytes&#41;
+
+# using multiplications -- inline
+@btime 2x*x*x - 6x*x &#43; 2*x - 1
+&gt; 97.310 ns &#40;0 allocations: 0 bytes&#41;</code></pre>
+<p>We write it once with multiplications and powers and get a runtime of around one-hundred nanoseconds. Since powers can usually be a bit more resource intensive than pure multiplications, we also write it with only multiplication operations, yet don&#39;t see much of an improvement.</p>
+<p>There&#39;s a macro in Julia <code>@fastmath</code> which involves some optimizations where we trade a little bit of accuracy for speed. However, for such a simple computation, we won&#39;t expect much of any impact, so we try using the same code but with the macro.</p>
+<pre><code class="language-julia"># using multiplications and powers -- inline/fastmath
+@btime @fastmath 2x^3 - 6x^2 &#43; 2x - 1
+&gt; 56.752 ns &#40;0 allocations: 0 bytes&#41;
+
+# using multiplications -- inline
+@btime @fastmath 2x*x*x - 6x*x &#43; 2*x - 1
+&gt; 58.184 ns &#40;0 allocations: 0 bytes&#41;</code></pre>
+<p>This really small change has yielded around a 45&#37; improvement in the speed of the code, and that&#39;s pretty huge. But, we can probably do a bit better.</p>
+<p>A common tool of computer scientists to speed up polynomial computations is something called Horner&#39;s method. The basic idea is that instead of computing the expanded polynomial, we iteratively compute it with pure multiplications by exploiting the axiom of multiplicative distributivity which is a requirement of the ring of integers.</p>
+<span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mo stretchy="false">(</mo><mo stretchy="false">(</mo><mn>2</mn><mi>x</mi><mo>−</mo><mn>6</mn><mo stretchy="false">)</mo><mi>x</mi><mo>+</mo><mn>2</mn><mo stretchy="false">)</mo><mi>x</mi><mo>−</mo><mn>1</mn><mtext> </mtext><mi mathvariant="normal">.</mi></mrow><annotation encoding="application/x-tex"> ((2x - 6)x + 2)x - 1 \,.</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">((</span><span class="mord">2</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">6</span><span class="mclose">)</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">2</span><span class="mclose">)</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">.</span></span></span></span></span>
+<p>We&#39;ll also leverage Julia&#39;s code optimizer by moving our previously inlined code to functions.</p>
+<pre><code class="language-julia">x &#61; 3
+
+function f_1&#40;poly, x&#41;
+    result &#61; poly&#91;1&#93;
+    for k in 1:length&#40;poly&#41;-1
+        result &#61; result*x &#43; poly&#91;k&#43;1&#93;
+    end
+    return result
+end
+
+poly &#61; &#91; 2; -6; 2; -1&#93;
+@btime f_1&#40;poly, x&#41;
+&gt; 15.372 ns &#40;0 allocations: 0 bytes&#41;
+
+f_2&#40;x&#41; &#61; 2*x*x*x - 6*x*x &#43; 2*x - 1
+
+@btime f_2&#40;x&#41;
+&gt; 13.754 ns &#40;0 allocations: 0 bytes&#41;
+
+f_3&#40;x&#41; &#61; 2*x^3 - 6*x^2 &#43; 2*x - 1
+
+@btime f_3&#40;x&#41;
+&gt; 13.739 ns &#40;0 allocations: 0 bytes&#41;</code></pre>
+<p>Whoa&#33; We ended up getting roughly the same improvement across all three functions, but in each case we&#39;re talking about a nearly 90&#37; improvement from the original code&#33; That&#39;s really huge&#33; We&#39;ve shown that inline version of the computation took around one-hundred nanoseconds, but by simply moving it to a function the same code is running in under 15 nanoseconds. Why is this? It&#39;s because when we compile the code, the function version ends up essentially becoming a constant so it will execute very fast.</p>
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: July 19, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        
+
+
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

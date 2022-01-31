@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+   <title>Null Maps</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="post_title__2"><a href="#post_title__2" class="header-anchor">Rules of Integration</a></h1>
+<p>The easiest expressions to integrate are polynomials. I&#39;ll reference constants included in the integration with \(k\) and constants of integration as \(c\). </p>
+<blockquote>
+<p>As a quick refresher, whenever we evaluate an <em>indefinite integral</em>, meaning the general form and without <em>limits of integration</em>, we always include a constant in the final answer since the derivative of any constant is \(0\).</p>
+</blockquote>
+<h3 id="integrating_a_constant_function__2"><a href="#integrating_a_constant_function__2" class="header-anchor">Integrating a Constant Function</a></h3>
+\[ \int k\ dx = k\int 1\ dx = kx + c\,.\]
+<p>.</p>
+<p>Notice that this is a special case of the following <em>power rule</em> when \(n = 0\).</p>
+<h3 id="the_power_rule__2"><a href="#the_power_rule__2" class="header-anchor">The Power Rule</a></h3>
+<p>When integrating any \(x^n\) where \(n \neq -1\),</p>
+\[ \int kx^n\ dx = \frac{k}{n+1} x^{n+1} + c \,.\]
+<h3 id="the_n_-1_case__2"><a href="#the_n_-1_case__2" class="header-anchor">The \(n = -1\) Case</a></h3>
+<p>Integrating the reciprocal of \(x\) yields the logarithmic function,</p>
+\[ \int \frac{1}{kx}\ dx = \frac{1}{k}\int (x)^{-1}\ dx = \frac{1}{k}\log |x| + c\,.\]
+<h3 id="exponentials__2"><a href="#exponentials__2" class="header-anchor">Exponentials</a></h3>
+<p>The exponential function is simultaneously the most boring and most interesting function of all.</p>
+\[ \int e^{\pm kx}\ dx = \pm \frac{1}{k} e^{\pm kx} + c\,.\]
+<p>The Taylor Series expansion of the exponential function, which is defined for all reals, \(\mathbb{R}\), is,</p>
+\[ e^x = 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \cdots\,,\]
+<p>or more compactly written as,</p>
+\[ e^x = \sum_{n=0}^\infty x^n\,. \]
+<h3 id="trigonometric_functions__2"><a href="#trigonometric_functions__2" class="header-anchor">Trigonometric Functions</a></h3>
+<p>Table of common trig integrations coming soon...</p>
+<h2 id="variable_substitutions__2"><a href="#variable_substitutions__2" class="header-anchor">Variable Substitutions</a></h2>
+<p>Given a function such as, \(f(x) = \sqrt{k_1 + k_2 x }\), we can perform a simple substitution such as, \(u = k_1 + k_2 x\). Since we&#39;ll also need to transform the \(dx\) variable as well, we differentiate \(u\) to access \(dx\),</p>
+\[ \begin{aligned} 
+u &= k_1 + k_2 x \\ 
+du &= k_2\ dx \implies dx = \frac{1}{k_2}\ du
+\end{aligned}\]
+<p>Therefore, plugging \((7)\) into the integration,</p>
+\[\int \sqrt{k_1 + k_2 x }\ dx \rightarrow \frac{1}{k_2}\int \sqrt{u}\ du\,, \]
+<p>and since roots are just fractional exponents, we apply the power rule and then substitute the original function back in for \(u\),</p>
+\[ \begin{aligned}\frac{1}{k_2}\int u^{1/2}\ du &= \frac{1}{k_2}\frac{1}{\frac{3}{2}} u^{3/2} + c \\
+&= \frac{2}{3k_2} u^{3/2} + c \\
+&= \frac{2}{3k_2}\sqrt{(k_1 + k_2 x)^3} + c 
+\end{aligned}\]
+<blockquote>
+<p>Don&#39;t forget to account for all of the variables&#33; In this case, when we differentiated, all of the \(x\) variables went away and we are perfectly fine to move constants around in the integrand. However, suppose that inside of the square root was an \(x^n\) term where \(n \geq 2\), then when differentiating we would still have an \(x\) term left over. Since \(x\) is the variable we are integrating with respect to, that wouldn&#39;t work. Suppose that the original function was \(f(x) = x\sqrt{k_1 + k_2 x^2}\). In this case, we could set \(u = k_1 + k_2 x^2\), differentiate to get \(du = 2 k_2 x\ dx\) and this would work fine because we can equate the left over \(x\) with the \(x\) in front of the square root and all is right in the world.</p>
+</blockquote>
+<h2 id="integration_by_parts_the_product_rule_for_integration__2"><a href="#integration_by_parts_the_product_rule_for_integration__2" class="header-anchor">Integration By Parts &#40;the Product Rule for Integration&#41;</a></h2>
+\[ \int u\ dv = u\cdot v - \int v\ du \]
+<p>Suppose \(u\) and \(v\) are functions are \(x\).</p>
+\[ \frac{d}{dx}(u\cdot v) = u\frac{d}{dx}v + v\frac{d}{dx}u \]
+\[\begin{aligned} 
+\int \frac{d}{dx}(u\cdot v)\ dx &= \int u\frac{d}{dx}v\ dx + \int v\frac{d}{dx}u\ dx \\
+\int u\frac{d}{dx}v\ dx + \int v\frac{d}{dx}u\ dx &= \int \frac{d}{dx}(u\cdot v)\ dx \\
+\int u\ dv &= u\cdot v -  \int v\ du \\
+\end{aligned}\]
+<p>As an example, suppose we are evaluating, \(\int e^x \cos(x)\ dx\).</p>
+<p>Follow the mnemonic, LIATE &#40;Logarithms, Inverse Trig, Algebraic, Trig, and Exponential&#41; for selecting \(u\) and \(dv\).</p>
+\[\begin{aligned}
+u &= \cos(x) \\
+du &= -\sin(x)\ dx \\
+dv &= e^x\ dx\\
+v &= e^x \\
+\end{aligned}\]
+\[\int e^x \cos(x)\ dx = e^x \cos(x) + \int e^x \sin(x)\ dx \]
+<p>We need to play the same game with the \(v\ du\) term.</p>
+\[\begin{aligned}
+u &= \sin(x) \\
+du &= \cos(x)\ dx \\
+dv &= e^x\ dx\\
+v &= e^x \\
+\end{aligned}\]
+\[\int e^x \sin(x)\ dx = e^x \sin(x) - \int e^x \cos(x)\ dx \]
+\[\begin{aligned}
+\int e^x \cos(x)\ dx &= e^x \cos(x) + \Big[ e^x \sin(x) - \int e^x \cos(x)\ dx \Big]\\
+&= e^x \cos(x) + e^x \sin(x) - \int e^x \cos(x)\ dx
+\end{aligned}\]
+<p>Let \(I = \int e^x \cos(x)\ dx\), then</p>
+\[\begin{aligned}
+I &= e^x \cos(x) + e^x \sin(x) - I\\
+2I &= e^x \cos(x) + e^x \sin(x) \\
+\\
+\int e^x \cos(x)\ dx &= \frac{e^x}{2}\Big(\cos(x) + \sin(x)\Big) + c
+\end{aligned}\]
+<h2 id="more_coming_soon__2"><a href="#more_coming_soon__2" class="header-anchor">More coming soon</a></h2>
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: June 26, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+   <title>Null Maps</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="post_title"><a href="#post_title" class="header-anchor">Using Sigmoid Functions</a></h1>
+<p>The sigmoid function is defined as,</p>
+\[ S(x) =  \frac{1}{1 + \exp(-kx)} \,,\]
+<p><img src="/assets/sigmoid.png" alt="" /></p>
+<p>and creates an &quot;S&quot; shape when plotted which ranges from \(0\) to \(1\). As we vary \(k\), we see that the slope increases.</p>
+<p>Therefore \(S(x)\) is often used to normalize values in \(\mathbb{R}\) to \(\mathbb{R}^{[0, 1]}\). A variation of \(S(x)\) is where we can scale the sigmoid to \(\mathbb{R}^{[0, \mu]}\),</p>
+\[ S_\mu(x) = \frac{\mu}{1 + \exp(-kx)}\,.\]
+<p>Let \(\mu = 10\) and \(k = 1\), then \(S_\mu(x)\) yields the plot below.</p>
+<p><img src="/assets/sigmoidmu.png" alt="" /></p>
+<p>You likely already see the power of this function as it has a domain over the reals from \(-\infty\) to \(\infty\) and is bijective with a codomain over the reals from \(0\) to \(1\). Furthermore, as we have seen, varying \(k\) will impact the slope of the function.</p>
+<p>In a finite environment, \(S(x)\) may appear to be surjective, but it indeed is bijective and has an inverse – the Logit function,</p>
+\[ S^{-1}(x) = \frac{1}{k}\log\Big( \frac{x}{1-x} \Big) = \frac{1}{k}\Big(  \log(x) - \log(1 - x)\Big)\]
+<p><img src="/assets/logit.png" alt="" /></p>
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: July 15, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

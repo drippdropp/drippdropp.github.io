@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+   <title>Null Maps</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="post_title"><a href="#post_title" class="header-anchor">Simple PostgreSQL Setup</a></h1>
+<p>After installing Postgres, we can manually start it using the <code>pg_ctl</code> executable.</p>
+<pre><code class="language-bash">pg_ctl -D /usr/local/var/postgres start</code></pre>
+<p>The path used above is to define where the database files will live.</p>
+<p>To access the postgres CLI with the <code>postgres</code> user:</p>
+<pre><code class="language-bash">psql postgres</code></pre>
+<p>To access the postgres CLI with the <code>primes_db</code> database:</p>
+<pre><code class="language-bash">psql -d primes_db</code></pre>
+<p>Create a database:</p>
+<pre><code class="language-bash">postgres&#61;# create database atomosdb;
+&gt; CREATE DATABASE</code></pre>
+<p>Create a user</p>
+<pre><code class="language-bash">postgres&#61;# create user atomos_dev with login encrypted password &#39;picksomepassword&#39;;
+&gt; CREATE ROLE</code></pre>
+<p>Grant privileges to user we just created on database we just created.</p>
+<pre><code class="language-bash">postgres&#61;# grant all privileges on database atomosdb to atomos_dev;
+&gt; GRANT</code></pre>
+<p>Create a table</p>
+<pre><code class="language-bash">atomosdb&#61;# CREATE TABLE users&#40;
+atomosdb&#40;#   ID INT PRIMARY KEY NOT NULL,
+atomosdb&#40;#   USERNAME TEXT NOT NULL,
+atomosdb&#40;#   FIRSTNAME TEXT NOT NULL,
+atomosdb&#40;#   LASTNAME TEXT NOT NULL,
+atomosdb&#40;#   CREATED_ON TIMESTAMPTZ,
+atomosdb&#40;#   UPDATED_ON TIMESTAMPTZ
+atomosdb&#40;# &#41;;
+&gt; CREATE TABLE</code></pre>
+<p>Create a sequence</p>
+<pre><code class="language-bash">atomosdb&#61;# create sequence users_seq START 100;
+&gt; CREATE SEQUENCE</code></pre>
+<p>Insert a record</p>
+<pre><code class="language-bash">atomosdb&#61;# insert into users &#40;id, username, firstname, lastname, created_on, updated_on &#41; values &#40; nextval&#40;&#39;users_seq&#39;&#41;, &#39;atomosadmin&#39;, &#39;Daniel&#39;, &#39;Marvin&#39;, current_timestamp, current_timestamp &#41;;
+&gt; INSERT 0 1</code></pre>
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: July 17, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+   <title>Null Maps</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="post_title"><a href="#post_title" class="header-anchor">Levenshtein Distance</a></h1>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+
+#define MIN3&#40;a,b,c&#41; &#40;&#40;a &lt; b&#41; ? &#40;&#40;a &lt; c&#41; ? a : c&#41; : &#40;&#40;b &lt; c&#41; ? b:c&#41; &#41;
+#define VERSION &quot;v1.0&quot;
+#define ANSI_COLOR_RED &quot;\x1b&#91;31m&quot;
+#define ANSI_COLOR_RESET &quot;\x1b&#91;0m&quot;
+#define ANSI_COLOR_YELLOW &quot;\x1b&#91;34m&quot;
+
+typedef unsigned short u16_t;
+
+#define U16_SIZE sizeof&#40;u16_t&#41;
+
+
+static void displayHelp&#40;&#41;;
+static u16_t getLevenDistance&#40;const char* s0, const char* s1&#41;;
+
+int main&#40;int argc, char** argv&#41;
+&#123;
+    unsigned short argc_copy &#61; argc;
+    unsigned short i &#61; 0;
+    const char* s0;
+    const char* s1;
+
+    if &#40;argc_copy &gt; 1&#41; &#123;
+        switch &#40;argv&#91;1&#93;&#91;1&#93;&#41; &#123;
+            default:
+            case &#39;h&#39;:
+                displayHelp&#40;&#41;;
+                return 0;
+            case &#39;d&#39;:
+                if &#40;argc &lt; 4&#41; &#123;
+                    printf&#40;&quot;\n&quot; ANSI_COLOR_RED 
+                        &quot;Please provide two strings for comparison.&quot;
+                        ANSI_COLOR_RESET
+                        &quot;\n&quot;&#41;;
+                    displayHelp&#40;&#41;;
+                &#125; else &#123;
+                    s0 &#61; &amp;argv&#91;2&#93;&#91;0&#93;;
+                    s1 &#61; &amp;argv&#91;3&#93;&#91;0&#93;;
+                    u16_t distance &#61; getLevenDistance&#40;s0,s1&#41;;
+                    printf&#40;&quot;\n\nThe Levenshtein distance of &#37;s and &#37;s is &#37;d.\n\n&quot;,
+                        s0, s1, distance&#41;;
+                    exit&#40;EXIT_SUCCESS&#41;;
+                    return 0;
+                &#125;
+                break;
+
+        &#125;
+    &#125; else &#123;
+        displayHelp&#40;&#41;;
+    &#125;
+
+    return 0;
+&#125;
+
+static void displayHelp&#40;&#41;
+&#123;
+    fprintf&#40;stderr,
+        &quot;\n-----------------------------------------------\n&quot;
+        ANSI_COLOR_YELLOW
+        &quot;Simple Levenshtein Distance Tool &#37;s&quot;
+        ANSI_COLOR_RESET
+        &quot;\n-----------------------------------------------\n&quot;
+        &quot;Usage: leven &#91;flag&#93; &#91;string1&#93; &#91;string2&#93;\n&quot;
+        &quot;  -h &lt;help&gt;        Display help text.\n&quot;
+        &quot;  -d &lt;distance&gt;    Return Levenshtein distance.&quot;
+        &quot;\n-----------------------------------------------\n&quot;
+        &quot;Example: leven -d aba acb\n\n&quot;,
+        VERSION&#41;;
+    exit&#40;EXIT_FAILURE&#41;;
+    return;
+
+&#125;
+
+static int processData&#40;int a&#41;
+&#123;
+
+&#125;
+
+static u16_t getLevenDistance&#40;const char* s0, const char* s1&#41;
+&#123;
+    u16_t s0_len &#61; &#40;u16_t&#41; strlen&#40;s0&#41; &#43; 1;
+    u16_t s1_len &#61; &#40;u16_t&#41; strlen&#40;s1&#41; &#43; 1;
+
+    u16_t* c_cost &#61; malloc&#40;U16_SIZE*s0_len&#41;;
+    u16_t* new_c_cost &#61; malloc&#40;U16_SIZE*s0_len&#41;;
+
+    for &#40;size_t i &#61; 0; i &lt; s0_len; i&#43;&#43;&#41; c_cost&#91;i&#93; &#61; i;
+
+    for &#40;size_t j &#61; 1; j &lt; s1_len; j&#43;&#43;&#41; &#123;
+        new_c_cost&#91;0&#93; &#61; &#40;u16_t&#41; j;
+        for &#40;size_t i &#61; 1; i &lt; s0_len; i&#43;&#43;&#41; &#123;
+            u16_t m &#61; &#40;s0&#91;i-1&#93; &#61;&#61; s1&#91;j-1&#93;&#41; ? 0 : 1;
+
+            u16_t c_r &#61; c_cost&#91;i-1&#93; &#43; m;
+            u16_t c_i &#61; c_cost&#91;i&#93; &#43; 1;
+            u16_t c_d &#61; new_c_cost&#91;i-1&#93; &#43; 1;
+
+            new_c_cost&#91;i&#93; &#61; MIN3&#40;c_r, c_i, c_d&#41;;
+        &#125;
+        u16_t* swap &#61; c_cost;
+        c_cost &#61; new_c_cost;
+        new_c_cost &#61; swap;
+    &#125;
+
+    return c_cost&#91;s0_len-1&#93;;
+&#125;</code></pre>
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: June 20, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+   <title>Null Maps</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="post_title__2"><a href="#post_title__2" class="header-anchor">How To Analyze a Function</a></h1>
+<p>Suppose we want to analyze a function like,</p>
+\[ \Bigg( \frac{x + |x|}{2}\Bigg)^2 + \Bigg( \frac{x - |x|}{2}\Bigg)^2 = x^2\,, \]
+<p>the first thing we&#39;ll usually do is try and get a sense of how the function behaves. This is essentially trying to get the &quot;lay of the land.&quot; In fact, I usually use the term <em>mapping</em> instead of <em>function</em> as it&#39;s a much clearer word in my opinion and does a better job at representing what <em>functions</em> actually do.</p>
+<p>The word <em>function</em> evokes a bit of a mechanical connotation, which is accurate enough in terms of it having an input and an output. It ellicits the vision of a machine where you plug in some value and it goes <em>chug chug chug</em> and some resulting value pops out. Thing is, we need to step back a bit and think about <em>every possible value</em> that could be <em>plugged in</em> and what do all of those points look like after our little function that could goes <em>chug chug chug</em> for a good, long while and spits out every possible result. More technically, this is called finding the <em>domain</em> and <em>codomain</em> of a mapping.</p>
+<p>Getting back to \((1)\), we can see that \(x\) isn&#39;t constrained by any logarithms, trigonometric functions, or any non-elementary functions, so it looks like \(x\) can accept any rational numbers. How do we verify this? Back to the <em>function</em> mindset and we <em>plug</em> in some points to see what we get. This process is sped up quite a bit by simply plotting the function. A couple lines of Julia code later and voila&#33;</p>
+<pre><code class="language-julia">function f&#40;x&#41;
+    &#40;&#40;x &#43; abs&#40;x&#41;&#41;/2&#41;^2 &#43; &#40;&#40;x - abs&#40;x&#41;&#41;/2&#41;^2 - x^2
+end
+
+plot&#40;f, ylim&#61;&#40;-1, 1&#41;, xlim&#61;&#40;-1000, 1000&#41;&#41;</code></pre>
+<p><img src="/assets/fn-1.png" alt="" /></p>
+<p>Such a simple plot offers some incredible insights into the function and helps steer our next steps. It appears that this equation is equivalent to the constant null function,</p>
+\[ f(x) = 0 \,.\]
+<p>Examining \((1)\), we can see that the second term will <em>always</em> reduce to \(0\) and after simplifying the first term, the equation becomes,</p>
+\[ x^2 = x^2 \implies x^2 - x^2 = 0\,. \]
+<p>Therefore, we have shown that \((1)\) maps all real values ranging from \(-\infty < x < \infty \) to \(0\). This means that \((1)\) is <em>homomorphic</em> to the constant null function, meaning they behave in the same way and have the same structure. With both functions, I can &quot;plug in&quot; any values in \(\mathbb{R}\) and will always get \(0\). Why have a specified values in \(\mathbb{R}\)? Because it turns out that when we plug in values from the complex numbers, \(\mathbb{C}\), we do <strong>not</strong> always get \(0\).</p>
+<p>Using the <code>ComplexPortraits</code> package, we can visually see a phase plot of the function in the complex plane.</p>
+<pre><code class="language-julia">ComplexPortraits.phaseplot&#40;-10.0 &#43; 10.0im, 10.0 - 10.0im, z -&gt; f&#40;z&#41;&#41;</code></pre>
+<p><img src="/assets/fn-2.png" alt="" /></p>
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: June 29, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

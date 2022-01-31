@@ -1,0 +1,8 @@
+@def title = "Null Maps"
+@def post_title = ""
+@def hasmath = true
+@def hascode = true
+@def tags = sort(["julia-bites", "code", "math", "probability"])
+@def display = true
+
+# {{ post_title }}

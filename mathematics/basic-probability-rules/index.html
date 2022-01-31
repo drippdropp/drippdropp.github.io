@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+   <title>Null Maps</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="post_title__2"><a href="#post_title__2" class="header-anchor">Basic Probability Rules</a></h1>
+<p>The field of probability is all about transforming counts of possible outcomes into geometric areas, volumes, etc. </p>
+<p>Let \(S\) be a set called the <em>sample space</em>. Each element of \(S\) is called an event, \(E\). The events each have a value which ranges from \(0\) to \(1\) and all the elements of \(S\) must sum to \(1\).</p>
+<p>Suppose we&#39;re rolling a fair die. There are six, discrete outcomes – I could roll a number anywhere from \(1\) to \(6\) and each outcome is equally likely. Suppose we rolled the die some arbitrary number of times and we saw that the distribution was <em>not</em> \(\frac{1}{6}\)th for each outcome. We would conclude that the die was <em>weighted</em>, or otherwise known as not fair.</p>
+<p>Let&#39;s see what happens when we&#39;re working with an unfair set of dice. We can write a function for a fair die.</p>
+<pre><code class="language-julia">function rollfairdie&#40;&#41;
+    rand&#40;1:6&#41;
+end
+
+function sumfrequencies&#40;samplespace, events&#41;
+    frequencies &#61; zeros&#40;Float64, length&#40;samplespace&#41;&#41;
+    for evt in events
+        frequencies&#91;evt&#93; &#43;&#61; 1
+    end
+    frequencies
+end</code></pre>
+<p>Here we&#39;re generating a random integer between one and six, equally. </p>
+<pre><code class="language-julia">rolls &#61; 100
+events &#61; &#91; rollfairdie&#40;&#41; for _ in 1:rolls &#93;;
+probabilities &#61; map&#40;x -&gt; x/rolls, sumfrequencies&#40;collect&#40;1:6&#41;, events&#41;&#41;
+bar&#40;1:6, probabilities, legend&#61;:topleft, label&#61;&quot;Probabilitiy&quot;&#41;</code></pre>
+<p><img src="/assets/fair-die.png" alt="" /></p>
+<p>Given one-hundred rolls, we can see that the distribution is fairly evenly spread across each of the numbers one through six.</p>
+<p>Now we&#39;ll use a feature from the <code>StatsBase</code> package – <code>sample</code> and <code>Weight</code>. <code>sample</code> takes two vectors, one is going to be the sample space, e.g. \(1\) to \(6\). The second one is the <code>Weight</code> object which contains a associated value for each element in the first vector – the weight.</p>
+<pre><code class="language-julia">function rollweighteddie&#40;; wts&#61;Weights&#40;&#91;1, 1, 1, 1, 6, 6&#93;&#41;&#41;
+    sample&#40;1:6, wts&#41;
+end
+
+rolls &#61; 100
+wts &#61; Weights&#40;&#91;1, 1, 1, 1, 6, 6&#93;&#41;
+events &#61; &#91; rollweighteddie&#40;wts&#61;wts&#41; for _ in 1:rolls &#93;;
+probabilities &#61; map&#40;x -&gt; x/rolls, sumfrequencies&#40;collect&#40;1:6&#41;, events&#41;&#41;
+bar&#40;1:6, probabilities, legend&#61;:topleft, label&#61;&quot;Probability&quot;&#41;</code></pre>
+<p><img src="/assets/weighted-die.png" alt="" /></p>
+<p>Now we can see that since we&#39;ve weighted the die with an higher likelihood of rolling a 5 or 6, and the plot shows us just that.</p>
+<h3 id="independence__2"><a href="#independence__2" class="header-anchor">Independence</a></h3>
+<p>Suppose that we have two events such as I roll a die twice. </p>
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: June 20, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

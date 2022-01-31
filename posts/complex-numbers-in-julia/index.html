@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+   <title>Null Maps</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="post_title"><a href="#post_title" class="header-anchor">Complex Numbers in Julia</a></h1>
+<p>Complex numbers are one of those topics a lot of people don&#39;t understand but are ridiculously powerful and have numerous applications in the real world, despite being called &quot;imaginary numbers.&quot;</p>
+<p>A <em>complex number</em> is a mathematical object of the form,</p>
+\[ z = a + ib\,, \]
+<p>where \(i = \sqrt{-1}\). Naturally, Julia offers great out-of-the-box support for complex numbers.</p>
+<p>Complex numbers can be instantiated by using the <code>Complex</code> object or through the syntactic sugar <code>a&#43;bim</code> where \(a\) and \(b\) are numerals.</p>
+<pre><code class="language-julia">Complex&#40;3, 4&#41; &#61;&#61; 3&#43;4im
+&gt; true</code></pre>
+<p>We can extract the real or imaginary parts using <code>real</code> and <code>imag</code>.</p>
+<pre><code class="language-julia">z &#61; 3&#43;4im
+z &#61;&#61; real&#40;z&#41; &#43; imag&#40;z&#41;*im
+&gt; true</code></pre>
+<p>Computing the length or <em>modulus</em> of a complex number is done with the <code>abs</code> function.</p>
+<p>Recall that the formula for the modulus of a complex number uses the Pythagorean theorem,</p>
+\[ |z| = \sqrt{\frak{Re}(z)^2 + \frak{Im}(z)^2}\,.\]
+<pre><code class="language-julia">abs&#40;z&#41;
+&gt; 5.0</code></pre>
+<p>We can also compute the squared modulus more efficiently than if we were to square the result of <code>abs</code> with <code>abs2</code></p>
+<pre><code class="language-julia">abs2&#40;z&#41;
+&gt; 25</code></pre>
+<p>We can compute the complex conjugate using <code>conj</code>.</p>
+<pre><code class="language-julia">conj&#40;z&#41;
+&gt; 3 - 4im</code></pre>
+<p>We can compute the angle between the real and imaginary components using <code>angle</code> and convert it from radians to degrees using <code>rad2deg</code> or back using <code>deg2rad</code>.</p>
+<pre><code class="language-julia">angle&#40;z&#41; |&gt; rad2deg
+&gt; 53.13010235415598</code></pre>
+<p>We can perform all the normal arithmetic operations with complex numbers.</p>
+<pre><code class="language-julia">z1 &#61; 2&#43;3im;
+z2 &#61; -3-2im;
+
+@show z1 &#43; z2
+&gt; z1 &#43; z2 &#61; -1 &#43; 1im
+
+@show z1 - z2
+&gt; z1 - z2 &#61; 5 &#43; 5im
+
+@show 2*z1
+&gt; 2z1 &#61; 4 &#43; 6im
+
+@show z1 * z2
+&gt; z1 * z2 &#61; 0 - 13im
+
+@show z1 / z2
+&gt; z1 / z2 &#61; -0.9230769230769231 - 0.38461538461538464im
+
+@show z1^2
+&gt; z1 ^ 2 &#61; -5 &#43; 12im</code></pre>
+<p>We can perform all of the normal trig and exponential functions with complex numbers too.</p>
+<pre><code class="language-julia">@show sin&#40;z&#41;
+&gt; sin&#40;z&#41; &#61; 3.853738037919377 - 27.016813258003932im
+
+@show cos&#40;z&#41;
+&gt; cos&#40;z&#41; &#61; -27.034945603074224 - 3.851153334811777im
+
+@show tan&#40;z&#41;
+&gt; tan&#40;z&#41; &#61; -0.0001873462046294785 &#43; 0.9993559873814731im
+
+@show exp&#40;z&#41;
+&gt; exp&#40;z&#41; &#61; -13.128783081462158 - 15.200784463067954im
+
+@show log&#40;z&#41;
+&gt; log&#40;z&#41; &#61; 1.6094379124341003 &#43; 0.9272952180016122im</code></pre>
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: July 07, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

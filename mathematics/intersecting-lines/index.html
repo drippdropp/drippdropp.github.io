@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+   <title>Null Maps</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="post_title__2"><a href="#post_title__2" class="header-anchor">Intersecting Lines</a></h1>
+<p>Finding where two lines intersect is a pretty common task in computing.</p>
+<p>Suppose we&#39;ve got \( y_1 = 2x + 3 \) and \( y_2 = -2x - 2 \).</p>
+<p>If we want to know where these two lines intersect, it becomes a question of where is \(y_1 = y_2\).</p>
+<p>We just set \(y1\) equal to \(y2\),</p>
+\[ 2x + 3 = -2x - 2 \,,\]
+<p>and solve for \(x\).</p>
+<p>After some algebra, we find that \(x = -\frac{5}{4}\).</p>
+<pre><code class="language-julia">using Plots
+
+x &#61; range&#40;-5, 5, length&#61;1000&#41;
+
+M &#61; &#91; 2 ; -2 &#93;
+B &#61; &#91; 3 ; -2 &#93;
+L1&#40;x&#41; &#61; M&#91;1&#93;*x &#43; B&#91;1&#93;
+L2&#40;x&#41; &#61; M&#91;2&#93;*x &#43; B&#91;2&#93;
+
+plot&#40;x, L1.&#40;x&#41;&#41;
+plot&#33;&#40;x, L2.&#40;x&#41;&#41;</code></pre>
+<p><img src="/assets/intersecting-lines.png" alt="" /></p>
+<p>From the graph, we can clearly see that \(-5/4\) is the right answer.</p>
+<p>To solve this programmatically we put the lines into standard form,</p>
+\[\begin{aligned}
+-2x + y &= 3 \\
+2x + y &= -2\,,
+\end{aligned}\]
+<p>which we put into matrix form.</p>
+\[\begin{bmatrix}-2 & 1 \\ 2 & 1 \end{bmatrix}\begin{bmatrix}x_1 \\ x_2 \end{bmatrix} = \begin{bmatrix}3 \\ -2\end{bmatrix}\]
+<pre><code class="language-julia">using LinearAlgebra, RowEchelon
+
+A &#61; &#91; -2 1 ; 2 1 &#93;
+b &#61; &#91;3 ; -2 &#93;
+
+&#40;x1, x2&#41; &#61; rref&#40;&#91; A b &#93;&#41;&#91;:, 3&#93;
+
+@show x1, x2
+&gt; &#40;x1, x2&#41; &#61; &#40;-1.25, 0.5&#41;</code></pre>
+<p>Or by \(A^{-1}\mathbf{b}\),</p>
+<pre><code class="language-julia">A &#61; &#91; -2 1 ; 2 1 &#93;
+b &#61; &#91;3 ; -2 &#93;
+
+&#40;x1, x2&#41; &#61; inv&#40;A&#41;*b
+
+@show x1, x2
+&gt; &#40;x1, x2&#41; &#61; &#40;-1.25, 0.5&#41;</code></pre>
+<p>If we don&#39;t have access to easy row reduction or can&#39;t generate the inverse of a matrix easily &#40;which is actually really easy for \(\mathbb{R}^2\) any way you cut it&#41;, the next best option is for us to use Cramer&#39;s Rule.</p>
+<pre><code class="language-julia">using LinearAlgebra
+
+x1 &#61; det&#40;&#91; b A&#91;:, 2&#93; &#93;&#41; / det&#40;A&#41;
+x2 &#61; det&#40;&#91; A&#91;:, 1&#93; b &#93;&#41; / det&#40;A&#41;
+
+@show x1, x2
+&gt; &#40;x1, x2&#41; &#61; &#40;-1.25, 0.5&#41;</code></pre>
+<p>And this is equivalent to,</p>
+<pre><code class="language-julia">&#40;a1, a2&#41; &#61; A&#91;:, 1&#93;
+&#40;b1, b2&#41; &#61; A&#91;:, 2&#93;
+&#40;c1, c2&#41; &#61; b
+
+d &#61; a1*b2 - a2*b1
+
+x1 &#61; &#40;c1*b2 - b1*c2&#41;/d
+x2 &#61; &#40;a1*c2 - c1*a2&#41;/d
+
+@show a1, a2
+&gt; &#40;a1, a2&#41; &#61; &#40;-2, 2&#41;
+
+@show b1, b2
+&gt; &#40;b1, b2&#41; &#61; &#40;1, 1&#41;
+
+@show c1, c2
+&gt; &#40;c1, c2&#41; &#61; &#40;3, -2&#41;
+
+@show x1, x2
+&gt; &#40;x1, x2&#41; &#61; &#40;-1.25, 0.5&#41;</code></pre>
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: June 19, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

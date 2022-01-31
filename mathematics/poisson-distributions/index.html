@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+   <title>Null Maps</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="post_title__2"><a href="#post_title__2" class="header-anchor">Poisson Distributions</a></h1>
+<p>When you want to determine the likelihood that something will happen a certain number of times within the frame of some context, the Poisson distribution is a good option.</p>
+<p>For example, suppose an editor knows that on average, there are 3 grammatical errors per page. What&#39;s the probability of there being 2 grammatical errors per page? What&#39;s the probability of there being 1, 2, or 3 grammatical errors per page?</p>
+<p>Or suppose you know a web server gets 25 requests per second. What&#39;s the probability that it will get 0 requests? What&#39;s the probability that it will get between 10 and 15 requests?</p>
+<p>These questions and more can be answered by the Poisson distribution.</p>
+<p>We can use when:</p>
+<ol>
+<li><p>The number of successes in two disjoint time intervals is independent.</p>
+</li>
+</ol>
+<ol start="2">
+<li><p>The probability of a success during a small time interval is proportional to the entire length of the time interval.</p>
+</li>
+</ol>
+<p>The probability mass function is given by,</p>
+\[ f(k; \lambda) = \frac{\lambda^k e^{-\lambda}}{k!} \]
+<p>where \(\lambda\) is the mean value of <em>whatever</em> per unit <em>whatever</em> time.</p>
+<p>It&#39;s just a lot easier to use Julia&#39;s <code>Distributions</code> package.</p>
+<p>The global populations increases by approximately three people every second.</p>
+<pre><code class="language-julia">using Distributions, StatsPlots, StatsBase
+
+d &#61; Poisson&#40;3&#41;
+plot&#40;d&#41;</code></pre>
+<p><img src="/assets/poisson-1.png" alt="" /></p>
+<p>Given that we know the average birthrate is three people each second, what&#39;s the probability that exactly four people will be born each second?</p>
+<pre><code class="language-julia">@show pdf&#40;d, 4&#41;
+&gt; pdf&#40;d, 4&#41; &#61; 0.16803135574154093</code></pre>
+<p>What&#39;s the probability that 0, 1, 2, 3, or 4 people will be born each second?</p>
+<pre><code class="language-julia">reduce&#40;&#40;iter, k&#41; -&gt; iter &#43; pdf&#40;d, k&#41;, 0:4&#41;
+&gt; 0.7654761761559083</code></pre>
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: June 19, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

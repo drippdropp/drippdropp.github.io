@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+   <title>Null Maps</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="post_title__2"><a href="#post_title__2" class="header-anchor">Web Scraping and Data Visualization</a></h1>
+<p>In this post, we&#39;re going to scrape a website to pull the Gallup poll results from a question, <a href="https://news.gallup.com/poll/15370/party-affiliation.aspx">&quot;In politics, as of today, do you consider yourself a Republican, a Democrat or an independent?&quot;</a></p>
+<p>The approach is as follows,</p>
+<ol>
+<li><p>Retrieve the web page using <code>HTTP</code>.</p>
+</li>
+<li><p>Use <code>Gumbo</code> to parse the body of the page.</p>
+</li>
+<li><p>Use <code>Cascadia</code> and <code>Gumbo</code> to select and parse individual data in the page.</p>
+</li>
+<li><p>Organize the data using <code>DataFrames</code>.</p>
+</li>
+<li><p>Write the data to disk using <code>DataFrames</code> and <code>CSV</code>.</p>
+</li>
+<li><p>Visualize the data using <code>Plots</code></p>
+</li>
+</ol>
+<p>Initially, we&#39;ll need to include our desired packages and libraries and I&#39;ll set some initial configuration values.</p>
+<pre><code class="language-julia">using HTTP, Cascadia, Gumbo
+using DataFrames, CSV
+using Dates, Plots, PlotThemes
+using StatsBase, StatsPlots
+
+gr&#40;&#41;;
+theme&#40;:gruvbox_light&#41;</code></pre>
+<p>To help with keeping the code clean and concise, I&#39;ve written a couple of helper functions. Also, I&#39;m thinking that this could be a good framework for other pages I want to scrape and store, so I created a small array of tuples which will house some data points. I might move <code>sources</code> to a DataFrame and write it to disk as CSV so I could potentially store a larger set of pages.</p>
+<pre><code class="language-julia"># Helper Functions
+function parsedate&#40;dt&#41;
+    rng &#61; findfirst&#40;&quot;-&quot;, dt&#41;
+    dt &#61; isnothing&#40;rng&#41; ? dt : dt&#91;1:rng.start-1&#93;
+    Date&#40;dt, &quot;yyyy u dd&quot;&#41;
+end
+
+function trendline&#40;y&#41;
+    ylen &#61; length&#40;y&#41;
+    X &#61; &#91; ones&#40;ylen&#41; 1:ylen &#93;
+    β &#61; inv&#40;X&#39;*X&#41;*X&#39;*y
+    return &#40;X, β&#41;
+end
+
+# Data
+sources &#61; &#91;
+ &#40;description &#61; &quot;Gallup Polling for Party Affiliation&quot;,
+  url &#61; &quot;https://news.gallup.com/poll/15370/party-affiliation.aspx&quot;,
+  csv &#61; &quot;/local/usr/webscrap_data/vote-registration.csv&quot;&#41;,
+&#93;;</code></pre>
+<p>I&#39;ve written a custom driver function for scraping the Gallup page. Since every page that I&#39;ll scrape will need a custom driver function, it would probably make sense to add another value to each <code>sources</code> tuple which would include maybe a file and the name of the function so I can keep them all organized.</p>
+<p>To write this driver function, I just manually loaded the page and inspected the source. I found the data I wanted was on the page and identified the tags that wrapped it. Any driver function is going to be unique to the page being scraped. I might try and generalize <em>some</em> parts of it, but the majority is going to be custom.</p>
+<pre><code class="language-julia">function scrape_gallup_partyaffil&#40;source&#41;
+    res &#61; HTTP.get&#40;source.url&#41;;
+    body &#61; String&#40;res.body&#41;;
+    html &#61; parsehtml&#40;body&#41;;
+
+    # Date, Republicans &#40;&#37;&#41;, Independents &#40;&#37;&#41;, Democrats &#40;&#37;&#41;
+    df &#61; DataFrame&#40;
+        Date &#61; Date&#91;&#93;, 
+        Republican &#61; Float64&#91;&#93;, 
+        Independent &#61; Float64&#91;&#93;,
+        Democrat &#61; Float64&#91;&#93;&#41;
+    for &#40;k, row&#41; in enumerate&#40;
+                eachmatch&#40;sel&quot;.table-overflow tr&quot;, html.root&#41;&#41;
+        try
+            vals &#61; &#40;
+                parsedate&#40;string&#40;text&#40;row&#91;1&#93;&#41;&#41;&#41;,
+                parse&#40;Float64, text&#40;row&#91;2&#93;&#41;&#41;/100,
+                parse&#40;Float64, text&#40;row&#91;3&#93;&#41;&#41;/100,
+                parse&#40;Float64, text&#40;row&#91;4&#93;&#41;&#41;/100
+            &#41;
+            push&#33;&#40;df, vals&#41;
+        catch e
+            continue
+        end
+    end
+    CSV.write&#40;source.csv, df&#41;
+    df
+end</code></pre>
+<p>Finally we put it all together and have some code to call the driver function and populate the DataFrame. Pull the data out to make it easier to work with and then plot it.</p>
+<pre><code class="language-julia">df &#61; scrape_gallup_partyaffil&#40;sources&#91;1&#93;&#41;;
+&#40;dts, rep, ind, dem&#41; &#61; &#40;df&#91;:, 1&#93;, df&#91;:, 2&#93;, df&#91;:, 3&#93;, df&#91;:, 4&#93;&#41;;
+
+&#40;X, β1&#41; &#61; trendline&#40;rep&#41;
+Plots.plot&#40;dts, rep, label&#61;&quot;Republican&quot;, c&#61;:red, legend&#61;:topleft, size&#61;&#40;900, 700&#41;&#41;
+Plots.plot&#33;&#40;dts, X*β1, c&#61;:red, lw&#61;5, label&#61;&quot;Republican Trend&quot;&#41;
+
+&#40;X, β2&#41; &#61; trendline&#40;ind&#41;
+Plots.plot&#33;&#40;dts, ind, label&#61;&quot;Independent&quot;, c&#61;:green&#41;
+Plots.plot&#33;&#40;dts, X*β2, c&#61;:green, lw&#61;5, label&#61;&quot;Independent Trend&quot;&#41;
+
+&#40;X, β3&#41; &#61; trendline&#40;dem&#41;
+Plots.plot&#33;&#40;dts, dem, label&#61;&quot;Democrat&quot;, c&#61;:blue&#41;
+Plots.plot&#33;&#40;dts, X*β3, c&#61;:blue, lw&#61;5, label&#61;&quot;Democrat Trend&quot;&#41;</code></pre>
+<p><img src="/assets/party-affil.png" alt="" /></p>
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: June 22, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

@@ -1,0 +1,14 @@
+<!doctype html> <html lang=en > <meta charset=UTF-8 > <meta name=viewport  content="width=device-width, initial-scale=1"> <link rel=stylesheet  href="/libs/katex/katex.min.css"> <link rel=stylesheet  href="/libs/highlight/github.min.css"> <link rel=preconnect  href="https://fonts.gstatic.com"> <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel=stylesheet > <link rel=stylesheet  href="/css/franklin.css"> <link rel=stylesheet  href="/css/poole_hyde.css"> <style> html {font-size: 17px;} .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;} @media (min-width: 940px) { .franklin-content {width: 100%; margin-left: auto; margin-right: auto;} } @media (max-width: 768px) { .franklin-content {padding-left: 6%; padding-right: 6%;} } </style> <link rel=icon  href="/assets/favicon.ico"> <title>Null Maps</title> <div class=sidebar > <div class="container sidebar-sticky"> <div class=sidebar-about > <h1><a href="/">Null Maps</a></h1> <p class=lead >My Adventures in Math and Technology</p> </div> <nav class=sidebar-nav > <a class="sidebar-nav-item " href="/">Home</a> <a class="sidebar-nav-item " href="/posts/">Posts</a> <a class="sidebar-nav-item " href="/projects/">Projects</a> <a class="sidebar-nav-item " href="/about/">About</a> </nav> <p>&copy; Daniel Marvin.</p> </div> </div> <div class="content container"> <div class=franklin-content ><h1 id=sieves_for_fun_and_profit ><a href="#sieves_for_fun_and_profit" class=header-anchor >Sieves for Fun and Profit</a></h1> <p>Sieves are quick ways to yield primes, or other numbers, based on some rule of cancellation.</p> <pre><code class=language-julia >function sieve&#40;N::Int&#41;
+	U &#61; ones&#40;N&#41;
+	U&#91;1&#93; &#61; 0
+
+	for p in 2:div&#40;N,2&#41;
+		if U&#91;p&#93; &#61;&#61; 1
+			for m in 2*p:p:N
+				U&#91;m&#93; &#61; 0
+			end
+		end
+	end
+
+	U
+end</code></pre> <div class=page-foot > <div class=copyright > &copy; Daniel Marvin. Last modified: June 16, 2021. </div> </div> </div> </div> <script src="/libs/highlight/highlight.pack.js"></script> <script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: ' '});</script>

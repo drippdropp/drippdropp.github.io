@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+  <title>Null Maps</title>
+</head>
+<body>
+<div class="sidebar sidebar-bg">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="post_title"><a href="#post_title" class="header-anchor">Calling C Code from Julia</a></h1>
+<p>If Julia was to be widely accepted in the scientific computing community, it was necessary to make it very simple and straight-forward to integrate C libraries and code into Julia applications.</p>
+<p>In scientific computing it&#39;s very common for people to write as much code as possible in Python since it&#39;s a very easy to use language, offers high productivity, and is powerful enough for most things. Nonetheless, when it comes to many tasks, Python just isn&#39;t fast enough and so people would write some parts in C or C&#43;&#43;, compile to a shared library, and call those functions wih Python.</p>
+<p>Julia offers another path – just write it all in Julia. In a lot of scenarios, Julia is plenty fast, regularly matching C and C&#43;&#43; for speed. Still that doesn&#39;t account for all of the libraries which have already been written and still have value. In this post, I&#39;ll run through how to integrate a C library into Julia code.</p>
+<p>First of all, we need a C library to work with so we&#39;ll implement Heron&#39;s Formula which is a simple method for <a href="/posts/mathematics/the-area-of-a-triangle/">finding the area of a triangle</a> given the lengths of its sides.</p>
+<p><img src="/assets/HeronTriangle.png" alt="" /></p>
+<span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>A</mi><mo>=</mo><msqrt><mrow><mi>s</mi><mo stretchy="false">(</mo><mi>s</mi><mo>−</mo><mi>a</mi><mo stretchy="false">)</mo><mo stretchy="false">(</mo><mi>s</mi><mo>−</mo><mi>b</mi><mo stretchy="false">)</mo><mo stretchy="false">(</mo><mi>s</mi><mo>−</mo><mi>c</mi><mo stretchy="false">)</mo></mrow></msqrt><mtext> </mtext><mo separator="true">,</mo></mrow><annotation encoding="application/x-tex"> A = \sqrt{s(s-a)(s-b)(s-c)}\,,</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathnormal">A</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.24em;vertical-align:-0.25612499999999994em;"></span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.983875em;"><span class="svg-align" style="top:-3.2em;"><span class="pstrut" style="height:3.2em;"></span><span class="mord" style="padding-left:1em;"><span class="mord mathnormal">s</span><span class="mopen">(</span><span class="mord mathnormal">s</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathnormal">a</span><span class="mclose">)</span><span class="mopen">(</span><span class="mord mathnormal">s</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathnormal">b</span><span class="mclose">)</span><span class="mopen">(</span><span class="mord mathnormal">s</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathnormal">c</span><span class="mclose">)</span></span></span><span style="top:-2.9438750000000002em;"><span class="pstrut" style="height:3.2em;"></span><span class="hide-tail" style="min-width:1.02em;height:1.28em;"><svg width='400em' height='1.28em' viewBox='0 0 400000 1296' preserveAspectRatio='xMinYMin slice'><path d='M263,681c0.7,0,18,39.7,52,119
+c34,79.3,68.167,158.7,102.5,238c34.3,79.3,51.8,119.3,52.5,120
+c340,-704.7,510.7,-1060.3,512,-1067
+l0 -0
+c4.7,-7.3,11,-11,19,-11
+H40000v40H1012.3
+s-271.3,567,-271.3,567c-38.7,80.7,-84,175,-136,283c-52,108,-89.167,185.3,-111.5,232
+c-22.3,46.7,-33.8,70.3,-34.5,71c-4.7,4.7,-12.3,7,-23,7s-12,-1,-12,-1
+s-109,-253,-109,-253c-72.7,-168,-109.3,-252,-110,-252c-10.7,8,-22,16.7,-34,26
+c-22,17.3,-33.3,26,-34,26s-26,-26,-26,-26s76,-59,76,-59s76,-60,76,-60z
+M1001 80h400000v40h-400000z'/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.25612499999999994em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mpunct">,</span></span></span></span></span>
+<p>where <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo stretchy="false">(</mo><mi>a</mi><mo>+</mo><mi>b</mi><mo>+</mo><mi>c</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">s = \frac{1}{2}(a + b + c)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">s</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.190108em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.845108em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mopen">(</span><span class="mord mathnormal">a</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.77777em;vertical-align:-0.08333em;"></span><span class="mord mathnormal">b</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">c</span><span class="mclose">)</span></span></span></span>.</p>
+<p>We&#39;ll write two functions <code>verify_triangle</code> and <code>heron</code>. The first will verify that given <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi></mrow><annotation encoding="application/x-tex">a</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">a</span></span></span></span>, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi></mrow><annotation encoding="application/x-tex">b</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathnormal">b</span></span></span></span>, and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi></mrow><annotation encoding="application/x-tex">c</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">c</span></span></span></span>, we are able to form a triangle. The second, <code>heron</code>, will compute the area using Heron&#39;s formula. We&#39;ll name this file <code>heron.c</code>.</p>
+<pre><code class="language-c">#include &lt;math.h&gt;
+
+typedef int bool;
+
+bool verify_triangle&#40;double a, double b, double c&#41; &#123;
+  int positive_lengths &#61; &#40;a &gt; 0 &amp;&amp; b &gt; 0 &amp;&amp; c &gt; 0&#41;;
+  int proper_construction &#61; &#40;a &#43; b &gt; c &amp;&amp; a &#43; c &gt; b &amp;&amp; b &#43; c &gt; a&#41;;
+  return &#40;positive_lengths &amp;&amp; proper_construction&#41;;
+&#125;
+
+double heron&#40;double a, double b, double c&#41; &#123;
+  double s &#61; &#40;a &#43; b &#43; c&#41;/2.0;
+
+  double area &#61; sqrt&#40;s * &#40;s - a&#41; * &#40;s - b&#41; * &#40;s - c&#41;&#41;;
+  return area;
+&#125;</code></pre>
+<p>To facilitate compilation, we&#39;ll also write a Makefile with filename <code>Makefile</code>.</p>
+<pre><code class="language-julia">CC&#61;gcc
+CFLAGS&#61;-c -Wall -fPIC
+SOURCES&#61;heron.c
+OBJECTS&#61;&#36;&#40;SOURCES:.c&#61;.o&#41;
+
+.c.o:
+	&#36;&#40;CC&#41; &#36;&#40;CFLAGS&#41; &#36;&lt; -o &#36;@
+
+lib: &#36;&#40;OBJECTS&#41;
+	&#36;&#40;CC&#41; -shared -fPIC -o libheron.so &#36;&#40;OBJECTS&#41;
+
+clean:
+	rm *.o *.so</code></pre>
+<p>Now we simply compile our shared library by running <code>make</code> in the directory.</p>
+<p>In our Julia code, we need to include the <code>Libdl</code> package and add the path of our shared library to the <code>Libdl.DL_LOAD_PATH</code> variable.</p>
+<p>If the file, <code>libheron.so</code> is located at <code>/full/path/to/heron/libheron.so</code>, then we use the path <code>/full/path/to/heron</code>.</p>
+<pre><code class="language-julia">using Libdl
+
+push&#33;&#40;Libdl.DL_LOAD_PATH, &quot;/full/path/to/heron&quot;&#41;
+
+function heron&#40;a::Float64, b::Float64, c::Float64&#41;
+    ccall&#40;&#40;:heron, &quot;libheron.so&quot;&#41;, Float64, &#40;Float64, Float64, Float64&#41;, a, b, c&#41;
+end
+
+function verifytriangle&#40;a::Float64, b::Float64, c::Float64&#41;
+    res &#61; ccall&#40;&#40;:verify_triangle, &quot;libheron.so&quot;&#41;, Int, &#40;Float64, Float64, Float64&#41;, a, b, c&#41;
+    res &#61;&#61; one&#40;Int64&#41; ? true : false
+end</code></pre>
+<p>It&#39;s worth noting that we may assume that C code will always be faster and that we will usually gain something from integrating a C library. This isn&#39;t always necessarily the case though.</p>
+<p>I&#39;ve also re-written the <code>heron</code> function in pure Julia,</p>
+<pre><code class="language-julia">function jheron&#40;a::Float64, b::Float64, c::Float64&#41;
+    s &#61; &#40;a &#43; b &#43; c&#41;/2.0
+    sqrt&#40;s * &#40;s - a&#41; * &#40;s - b&#41; * &#40;s - c&#41;&#41;
+end</code></pre>
+<p>When we benchmark it,</p>
+<pre><code class="language-julia">@btime heron&#40;538., 5234., 5252.&#41;
+&gt;  4.459 ns &#40;0 allocations: 0 bytes&#41;
+
+@btime jheron&#40;538., 5234., 5252.&#41;
+&gt;  1.436 ns &#40;0 allocations: 0 bytes&#41;</code></pre>
+<p>We can see that the Julia version of the function requires approximately one-third of the time of the C function.</p>
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: July 24, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        
+
+
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

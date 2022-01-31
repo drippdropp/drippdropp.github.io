@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+   <title>Null Maps</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="post_title__2"><a href="#post_title__2" class="header-anchor">Evaluating Triple Integrals with SymPy_jl</a></h1>
+<p>Suppose we want to determine the volume of a sphere with radius \(R\). Spherical coordinates are clearly the best option so the integral we are interested in is,</p>
+\[ \iiint_D \rho^2 \sin(\phi)\ d\rho\ d\phi\ d\theta \,.\]
+<p>By Fubini&#39;s theorem, we can change around the order of variables as we like, as long as we are consistent with the limits of integration which are given as,</p>
+\[\begin{aligned}
+0 \leq\ &\rho\ \leq R \\
+0 \leq\ &\theta\ \leq 2\pi \\
+0 \leq\ &\phi\ \leq \pi/2 \\
+\end{aligned}\]
+<p>and then we&#39;ll need to double it since we&#39;re only integrating over the top hemisphere.</p>
+<pre><code class="language-julia">using SymPy
+
+@vars ρ θ ϕ R
+
+intlims &#61; Dict&#123;Sym, Tuple&#123;Int64, Number&#125;&#125;&#40;
+    ρ &#61;&gt; &#40;0, R&#41;,
+    θ &#61;&gt; &#40;0, 2π&#41;,
+    ϕ &#61;&gt; &#40;0, π/2&#41;
+&#41;
+
+eqn &#61; ρ^2 * sin&#40;ϕ&#41;
+
+2 * integrate&#40;eqn, 
+    &#40;ρ, intlims&#91;ρ&#93;&#91;1&#93;, intlims&#91;ρ&#93;&#91;2&#93;&#41;,
+    &#40;ϕ, intlims&#91;ϕ&#93;&#91;1&#93;, intlims&#91;ϕ&#93;&#91;2&#93;&#41;,
+    &#40;θ, intlims&#91;θ&#93;&#91;1&#93;, intlims&#91;θ&#93;&#91;2&#93;&#41;  
+&#41;
+&gt; 4.18879020478639𝑅3</code></pre>
+<p>Which is approximately equal to the known volume of a sphere,</p>
+\[ \frac{4}{3}\pi R^3 \,.\]
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: June 26, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

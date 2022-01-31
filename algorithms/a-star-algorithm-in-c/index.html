@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+   <title>Null Maps</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="post_title__2"><a href="#post_title__2" class="header-anchor">A* Algorithm in C</a></h1>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;math.h&gt;
+
+#define kMANHATTAN &quot;manhattan&quot;
+#define kEUCLIDEAN &quot;euclidean&quot;
+
+typedef unsigned int u_int32_t;
+typedef struct objPoint Point;
+typedef struct objNode Node;
+typedef struct objList List;
+
+struct objPoint &#123;
+    u_int32_t x;
+    u_int32_t y;
+&#125;;
+
+struct objNode &#123;
+    Point point;
+    u_int32_t h_value;
+    u_int32_t g_value;
+    u_int32_t f_value;
+    Node* parent;
+&#125;;
+
+struct objList &#123;
+    Node** nodes;
+    u_int32_t list_size;
+&#125;;
+
+/************************************************************************/
+/************************************************************************/
+/** Struct Constructors **/
+/************************************************************************/
+Point* Point_new&#40;u_int32_t, u_int32_t&#41;;
+Node* Node_new&#40;Point*&#41;;
+List* List_new&#40;Node*&#41;;
+List* _List_new&#40;&#41;;
+/************************************************************************/
+/** Struct Function Defintions **/
+/************************************************************************/
+List* List_addNode&#40;List*, Node*&#41;;
+List* List_popNode&#40;List*&#41;;
+List* List_clear&#40;List*&#41;;
+/************************************************************************/
+
+/************************************************************************/
+/************************************************************************/
+/** Function Definitions **/
+/************************************************************************/
+/************************************************************************/
+inline u_int32_t get_minimum_movement_cost&#40;&#41;;
+/************************************************************************/
+u_int32_t get_heuristic_value&#40;Point*, Point*, const char*&#41;;
+/************************************************************************/
+void construct_matrix&#40;Node**, const u_int32_t, const u_int32_t&#41;;
+/************************************************************************/
+void calculate_node_heuristics&#40;Node*, const u_int32_t, const u_int32_t&#41;;
+/************************************************************************/
+void print_matrix&#40;Node**&#41;;
+/************************************************************************/
+void process_matrix&#40;Node**, Node*, Node*&#41;;
+/************************************************************************/
+/************************************************************************/
+/************************************************************************/
+
+
+
+/******************************
+* @method main
+* @param argc &#91;int&#93;
+* @param argv &#91;char**&#93;
+* @return &#91;int&#93;
+*******************************/
+int main&#40;int argc, char** argv&#41; 
+&#123;
+    Node* open_nodes;
+    Node* closed_nodes;
+    const u_int32_t max_X &#61; 10;
+    const u_int32_t max_Y &#61; 10;
+
+    char* hello;
+    hello &#61; &quot;Hi there&#33;&quot;;
+
+    Point start_point;
+    start_point.x &#61; 0;
+    start_point.y &#61; 0;
+
+    open_nodes &#61; malloc&#40;max_X*max_Y*sizeof&#40;Node&#41;&#41;;
+    closed_nodes &#61; malloc&#40;max_X*max_Y*sizeof&#40;Node&#41;&#41;;
+
+    return 0;
+&#125;
+
+/******************************
+* @method Point_new
+* @param x &#91;u_int32_t&#93;
+* @param y &#91;u_int32_t&#93;
+* @return &#91;Point*&#93;
+*******************************/
+Point* Point_new&#40;u_int32_t x, u_int32_t y&#41; &#123;
+    Point* newPoint &#61; &#40;Point*&#41; malloc&#40;sizeof&#40;Point&#41;&#41;;
+    newPoint-&gt;x &#61; x, newPoint-&gt;y &#61; y;
+    return newPoint;
+&#125;
+
+/******************************
+* @method Node_new
+* @param p &#91;Point*&#93;
+* @return &#91;Node*&#93;
+*******************************/
+Node* Node_new&#40;Point* p&#41; &#123;
+    Node* newNode &#61; &#40;Node*&#41; malloc&#40;sizeof&#40;Node&#41;&#41;;
+    newNode-&gt;point &#61; *p;
+    return newNode;
+&#125;
+
+/******************************
+* @method List_new
+* @param n &#91;Node*&#93;
+* @return &#91;List*&#93;
+*******************************/
+List* List_new&#40;Node* n&#41; &#123;
+    List* newList &#61; _List_new&#40;&#41;;
+    newList-&gt;nodes&#91;0&#93; &#61; n;
+    newList-&gt;list_size&#43;&#43;;
+    return newList;
+&#125;
+
+/******************************
+* @private
+* @method _List_new
+* @return &#91;List*&#93;
+*******************************/
+List* _List_new&#40;&#41; &#123;
+    List* newList &#61; &#40;List*&#41; malloc&#40;sizeof&#40;List&#41;&#41;;
+    newList-&gt;nodes &#61; &#40;Node**&#41; malloc&#40;5*sizeof&#40;Node*&#41;&#41;;
+    newList-&gt;list_size &#61; 0;
+    return newList;
+&#125;
+
+/******************************
+* @method List_addNode
+* @param l &#91;List*&#93;
+* @param n &#91;Node*&#93;
+* @return &#91;List*&#93;
+*******************************/
+List* List_addNode&#40;List* l, Node* n&#41; &#123;
+    if &#40;l-&gt;list_size &lt;&#61; &#40;sizeof&#40;l-&gt;nodes&#41;/sizeof&#40;Node*&#41;&#41;/2&#41; &#123;
+        Node** tmp_nodes &#61; malloc&#40;l-&gt;list_size*sizeof&#40;Node*&#41;&#41;;
+        for &#40;int i &#61; 0; i &lt; l-&gt;list_size; i&#43;&#43;&#41;
+            tmp_nodes&#91;i&#93; &#61; l-&gt;nodes&#91;i&#93;;
+        free&#40;l-&gt;nodes&#41;;
+        l-&gt;nodes &#61; &#40;Node**&#41; malloc&#40;l-&gt;list_size*l-&gt;list_size*sizeof&#40;Node*&#41;&#41;;
+        for &#40;int i &#61; 0; i &lt; l-&gt;list_size; i&#43;&#43;&#41;
+            l-&gt;nodes&#91;i&#93; &#61; tmp_nodes&#91;i&#93;;
+        free&#40;tmp_nodes&#41;;
+        l-&gt;nodes&#91;l-&gt;list_size&#93; &#61; n;
+        l-&gt;list_size&#43;&#43;;
+    &#125; else &#123;
+        l-&gt;nodes&#91;l-&gt;list_size&#93; &#61; n;
+        l-&gt;list_size&#43;&#43;;
+    &#125;
+    return l;
+&#125;
+
+/**********************************
+* @inline get_minimum_movement_cost
+* @return &#91;u_int32_t&#93;
+***********************************/
+inline u_int32_t get_minimum_movement_cost&#40;&#41;&#123; return 1; &#125;
+
+/******************************
+* @method get_heuristic_value
+* @param p &#91;Point*&#93;
+* @param goal &#91;Point*&#93;
+* @param type &#91;@const char*&#93;
+* @return &#91;u_int32_t&#93;
+*******************************/
+u_int32_t get_heuristic_value&#40;Point* p, Point* goal, const char* type&#41; &#123;
+    if &#40;strcmp&#40;type, kMANHATTAN&#41;&#41; &#123;
+        const u_int32_t distance_x &#61; abs&#40;p-&gt;x - goal-&gt;x&#41;;
+        const u_int32_t distance_y &#61; abs&#40;p-&gt;y - goal-&gt;y&#41;;
+        const u_int32_t min_move_cost &#61; 1;
+        return min_move_cost*&#40;distance_x &#43; distance_y&#41;;
+    &#125; else if &#40;strcmp&#40;type, kEUCLIDEAN&#41;&#41; &#123;      
+        const u_int32_t distance_x &#61; goal-&gt;x - p-&gt;x;
+        const u_int32_t distance_y &#61; goal-&gt;y - p-&gt;y;
+        return &#40;u_int32_t&#41; sqrt&#40;powf&#40;&#40;float&#41;distance_x, 2&#41;&#43;powf&#40;&#40;float&#41;distance_y, 2&#41;&#41;;
+    &#125; else &#123;
+        fprintf&#40;stderr, &quot;You must include either manhattan or euclidean.\n\n&quot;&#41;;
+        return 0;
+    &#125;
+&#125;
+
+/******************************
+* @method construct_matrix
+* @param nodes &#91;Node**&#93;
+* @param max_X &#91;@const u_int32_t&#93;
+* @param max_Y &#91;@const u_int32_t&#93;
+* @return &#91;void&#93;
+*******************************/
+void construct_matrix&#40;  Node** nodes, 
+                        const u_int32_t max_X, 
+                        const u_int32_t max_Y&#41; &#123;
+    u_int32_t pos &#61; 0;
+    for &#40;u_int32_t i &#61; 0; i &lt; max_X; i&#43;&#43;&#41;
+        for &#40;u_int32_t j &#61; 0; j &lt; max_Y; j&#43;&#43;&#41; &#123;
+            nodes&#91;pos&#93; &#61; Node_new&#40; Point_new&#40;i, j&#41;&#41;;
+            pos&#43;&#43;;&#125;
+&#125;
+
+/**********************************
+* @method calculate_node_heuristics
+* @param nodes &#91;Node**&#93;
+* @param max_X &#91;@const u_int32_t&#93;
+* @param max_Y &#91;@const u_int32_t&#93;
+* @return &#91;void&#93;
+***********************************/
+void calculate_node_heuristics&#40; Node* nodes, 
+                                const u_int32_t max_X, 
+                                const u_int32_t max_Y&#41; &#123;
+    /* calc */
+
+&#125;
+
+/******************************
+* @method print_matrix
+* @param matrix &#91;Node*&#93;
+* @return &#91;void&#93;
+*******************************/
+void print_matrix&#40;Node** matrix&#41; &#123;
+    for &#40;int i &#61; 0; i &lt; sizeof&#40;matrix&#41;/sizeof&#40;Node&#41;; i&#43;&#43; &#41; &#123;
+        printf&#40;&quot;x:&#37;d, y:&#37;d\n&quot;, matrix&#91;i&#93;-&gt;point.x, matrix&#91;i&#93;-&gt;point.y&#41;;
+    &#125;
+&#125;
+
+/******************************
+* @method process_matrix
+* @param matrix &#91;Node**&#93;
+* @param open &#91;Node*&#93;
+* @param closed &#91;Node*&#93;
+* @return &#91;void&#93;
+*******************************/
+void process_matrix&#40;Node** matrix, Node* open, Node* closed&#41; &#123;
+
+&#125;</code></pre>
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: June 20, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+   <title>Null Maps</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="computing_geodesics"><a href="#computing_geodesics" class="header-anchor">Computing Geodesics</a></h1>
+<p>I&#39;d like to be able to provide two points given latitude and longitude and compute the &quot;as the crow flies&quot; distance between them.</p>
+<pre><code class="language-julia">locations_latlon &#61; Dict&#123;Symbol, LatLon&#125;&#40;
+    :washington_dc &#61;&gt; LatLon&#40;&quot;38.9072N&quot;, &quot;77.0369W&quot;&#41;,
+    :london_uk &#61;&gt; LatLon&#40;&quot;51.5074N&quot;, &quot;0.1278W&quot;&#41;,
+    :paris_fr &#61;&gt; LatLon&#40;&quot;48.8555N&quot;, &quot;2.3522E&quot;&#41;,
+    :lyon_fr &#61;&gt; LatLon&#40;&quot;45.7597N&quot;, &quot;4.8422E&quot;&#41;,
+    :tokyo_jp &#61;&gt; LatLon&#40;&quot;35.6804N&quot;, &quot;139.7690E&quot;&#41;,
+    :buenosaires_ar &#61;&gt; LatLon&#40;&quot;34.6037S&quot;, &quot;58.3816W&quot;&#41;,
+    :capetown_sa &#61;&gt; LatLon&#40;&quot;33.9249S&quot;, &quot;18.4241E&quot;&#41;
+&#41;</code></pre>
+<p>As shown above, I need some way of storing the lat and lon data, so I created a struct called <code>LatLon</code> and wrote a constructor. Since Most of the lat and lon data I have comes in string form with a cardinal direction stamped on the end, I&#39;ll also write a helper function to convert the string form to a float. Any South and West addresses will be negative, so I&#39;ll scale the parsed value by either \(1\) or \(-1\) depending on if I need to add a sign or not.</p>
+<p>Another approach would be to multiply the parsed value by \((-1)^k\) where the parity of \(k\) would influence whether the final term remained positive or became negative, but we only have two states to worry about and a multiplicative operation will be faster than an exponent operation.</p>
+<pre><code class="language-julia">function transformlatlon&#40;latlon::String&#41;
+    sgn &#61; &#40;latlon&#91;end&#93; ∈ &#91;&#39;S&#39;, &#39;W&#39;&#93;&#41; ? -1 : 1
+    sgn * parse&#40;Float64, latlon&#91;1:end-1&#93;&#41;
+end
+
+struct LatLon&#123;T&lt;:Real&#125;
+    lat::T
+    lon::T
+end
+
+function LatLon&#40;lat::String, lon::String&#41;
+    &#40;lat, lon&#41; &#61; map&#40;transformlatlon, &#91;lat, lon&#93;&#41;
+    LatLon&#40;lat, lon&#41;
+end</code></pre>
+<p>I&#39;d like to be able to decompose a <code>LatLon</code> object quickly, e.g.</p>
+<pre><code class="language-julia">&#40;lat, lon&#41; &#61; LatLon&#40;&quot;38.9072N&quot;, &quot;77.0369W&quot;&#41;</code></pre>
+<p>which requires a simple implementation of <code>Base.iterate</code>. Since there are only two states to worry about, it&#39;s pretty straight-forward.</p>
+<pre><code class="language-julia">function Base.iterate&#40;LL::LatLon, state&#61;1&#41;
+    state &gt; 2 &amp;&amp; return nothing
+    state &#61;&#61; 1 ? &#40;LL.lat, 2&#41; : &#40;LL.lon, 3&#41;
+end</code></pre>
+<p>Finally, we&#39;ll implement the Haversine Distance formula to compute the geodesic or &quot;great circle&quot; distance. Since I&#39;m storing my latitude and longitude values in a dictionary, I&#39;ll leverage Julia&#39;s method dispatching and write a second wrapper function where I can just pass in symbols with the names of locations.</p>
+<p>Given points \((\rho, \phi_1, \theta_1)\) and \((\rho, \phi_2, \theta_2)\), where \(\rho = 6371\) kilometers, \(\Delta \phi = \phi_2 - \phi_1\), and \(\Delta \theta = \theta_2 - \theta_1\), the Haversine Distance formula is defined as,</p>
+\[2 \cdot \rho \cdot \tan^{-1}\Bigg(\sqrt{\frac{\sin^2\Big(\frac{\Delta \phi}{2}\Big) + \cos(\phi_1)\cos(\phi_2) \sin^2\Big(\frac{\Delta \theta}{2}\Big)}{1 - \sin^2\Big(\frac{\Delta \phi}{2}\Big) - \cos(\phi_1)\cos(\phi_2) \sin^2\Big(\frac{\Delta \theta}{2}\Big)}}\Bigg)\]
+<pre><code class="language-julia">function haversine&#40;p1::LatLon, p2::LatLon&#41;
+    lat1, lon1 &#61; p1
+    lat2, lon2 &#61; p2
+    radius &#61; 6371 # in kilometers
+    
+    dlat &#61; deg2rad&#40;lat2 - lat1&#41;
+    dlon &#61; deg2rad&#40;lon2 - lon1&#41;
+    
+    a &#61; &#40;sin&#40;dlat / 2&#41; * sin&#40;dlat / 2&#41; &#43; 
+        cos&#40;deg2rad&#40;lat1&#41;&#41; * cos&#40;deg2rad&#40;lat2&#41;&#41; *
+        sin&#40;dlon / 2&#41; * sin&#40;dlon / 2&#41;&#41;
+    c &#61; 2 * atan&#40;sqrt&#40;a&#41;, sqrt&#40;1 - a&#41;&#41;
+    radius * c
+end
+
+function haversine&#40;p1::Symbol, p2::Symbol&#41;
+    haversine&#40;locations_latlon&#91;p1&#93;, locations_latlon&#91;p2&#93;&#41;
+end</code></pre>
+<p>Now I can easily decompose locations.</p>
+<pre><code class="language-julia">&#40;lat, lon&#41; &#61; locations_latlon&#91;:washington_dc&#93;
+
+@show lat
+&gt; lat &#61; 38.9072
+
+@show lon
+&gt; lon &#61; -77.0369</code></pre>
+<p>And I can compute distances by name.</p>
+<pre><code class="language-julia">@show haversine&#40;:washington_dc, :london_uk&#41;
+&gt; haversine&#40;:washington_dc, :london_uk&#41; &#61; 5897.618855872552
+
+@show haversine&#40;:lyon_fr, :paris_fr&#41;
+&gt; haversine&#40;:lyon_fr, :paris_fr&#41; &#61; 392.0501333501885</code></pre>
+<h2 id="spherical_coordinates"><a href="#spherical_coordinates" class="header-anchor">Spherical Coordinates</a></h2>
+<p>Another common coordinate system for geographic locations is spherical coordinates. If we think of polar coordinates, which transform from cartesian coordinates with,</p>
+\[\begin{aligned} x &= r \cos(\theta) \\ y &= r \sin(\theta) \end{aligned}\,,\]
+<p>where \(r\) is the radius and \(\theta = \tan^{-1}(\frac{y}{x})\). We can expand to cylindrical coordinates by adding a \(z = z\) component.</p>
+<p>Finally, spherical coordinates are transformed with,</p>
+\[\begin{aligned}
+x &= \rho \cos(\phi)\sin(\theta) \\
+y &= \rho \sin(\phi)\sin(\theta) \\
+z &= \rho \cos(\theta)\,.
+\end{aligned}\]
+<p>Latitude, \(\ell_1\), is presented from -90 to 90 degrees and longitude, \(\ell_2\), is presented from -180 to 180 degrees. Therefore converting to radians simply requires a small adjustment.</p>
+<p>Let \(\xi = \frac{\pi}{180}\).</p>
+\[\begin{aligned}
+\rho &= \rho \\
+\phi &= \frac{\pi}{2} - \ell_1\cdot\xi\\
+\theta &= \ell_2\cdot\xi\,.
+\end{aligned}\]
+<pre><code class="language-julia">struct SphericalCoordinates&#123;T&lt;:Real&#125;
+    ρ::T
+    ϕ::T
+    θ::T
+end
+
+function SphericalCoordinates&#40;geo::LatLon&#41;
+    ρ &#61; 6.371e3 # in kms
+    ϕ &#61; deg2rad&#40;90-geo.lat&#41;
+    θ &#61; deg2rad&#40;geo.lon&#41;
+    SphericalCoordinates&#40;ρ, ϕ, θ&#41;
+end</code></pre>
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: June 19, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

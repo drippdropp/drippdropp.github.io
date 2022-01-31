@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+   <title>Null Maps</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="post_title"><a href="#post_title" class="header-anchor">Fermat Primality Test</a></h1>
+<p>Many classical primality tests are based on Fermat&#39;s Little Theorem which tells us that if,</p>
+\[ a^{p-1} \equiv 1 \pmod{p} \,.\]
+<p>where \(a \in \mathbb{Z}\), then \(p\) is prime, for all \(1 \leq a < p\).</p>
+<h3 id="fermat_primality_test"><a href="#fermat_primality_test" class="header-anchor">Fermat Primality Test</a></h3>
+<p>Since there are more composites than there are primes, a common test is to randomly select some \(1 \leq a < p\) and check to see if \((1)\) is satisfied. However, there are numbers called <em>Carmichael Numbers</em> which will pass this test, but are in fact composite. For example, \(341 = 11 \cdot 31\), so \(341\) is definitely composite. However, it will pass the <em>Fermat Primality Test</em>, for any \(a\) which is a power of \(2\), e.g. \(2^{340} \equiv 1 \pmod{341}\). However, \(341\) is <strong>not</strong> actually a <em>Carmichael number</em> because it will fail the test for other values of \(a\). Carmichael numbers on the other hand will actually pass for <em>all</em> values of \(a\) even though it is a composite number. The smallest Carmichael number is \(561\).</p>
+<p>We therefore have two problems to consider. The first is the problem of those composite numbers which will pass the primality test for some values of \(a\). </p>
+<p>In order to combat this problem, we repeat the Fermat primality test \(k\) times.</p>
+<pre><code class="language-julia">function fermatprimality&#40;k, p&#41;
+    for _ in 1:k
+        a &#61; rand&#40;1:p-1&#41;
+        res &#61; mod&#40;big&#40;a&#41;^&#40;p-1&#41;, p&#41; &#61;&#61; 1
+        if res &#61;&#61; false
+            return :composite
+        end
+    end
+    return :likelyprime
+end
+
+fermatprimality&#40;1, 341&#41;
+&gt;  :likelyprime</code></pre>
+<p>We can run an experiment and plot how repetitions impact the validity of the primality test.</p>
+<pre><code class="language-julia">ks &#61; 5
+experimentcount &#61; 10
+results &#61; zeros&#40;Int, &#40;experimentcount, 2, ks&#41;&#41;
+table &#61; zeros&#40;Float64, &#40;ks, 2&#41;&#41;
+
+for k in 1:ks
+    for i in 1:experimentcount
+        res &#61; &#91; fermatprimality&#40;k, 341&#41; for _ in 1:1000 &#93;
+        c &#61; filter&#40;x -&gt; x &#61;&#61; :composite, res&#41; |&gt; length
+        lp &#61; 1000 - c
+        results&#91;i, :, k&#93; &#61; &#91;c, lp&#93;
+    end
+    table&#91;k, :&#93; &#61; &#91;
+        mean&#40;results&#91;:, 1, k&#93;&#41;/1000, 
+        mean&#40;results&#91;:, 2, k&#93;&#41;/1000
+    &#93;
+end
+
+bar&#40;table, label&#61;&#91;&quot;Composite&quot; &quot;Likely Prime&quot;&#93;, xlabel&#61;&quot;Test Repeats&quot;&#41;</code></pre>
+<p><img src="/assets/primality-failures.png" alt="" /></p>
+<p>We can clearly see that by re-running the test a minimum of \(5\) times, we can reduce the potential of error to approximately \(0.1\%\) which means this is a pretty good tool for verifying primality.</p>
+<p>The second problem is that of Carmichael numbers. Fortunately, they are so few that we can manually check for a large chunk of them.</p>
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: July 06, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

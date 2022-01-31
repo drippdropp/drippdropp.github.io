@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+   <title>Null Maps</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="post_title"><a href="#post_title" class="header-anchor">Linear Algebra Operations</a></h1>
+<p>One of the reasons that the Julia language is gaining so much momentum in scientific computing is in part due to its excellent Linear Algebra support which is available out-of-the-box.</p>
+<p>While basic vector and matrix algebra support is available by default, we&#39;ll want to extend our available operations by including the <code>LinearAlgebra</code> package which is part of the standard library as well as the <code>RowEchelon</code> package which is available through the <code>Pkg</code> system.</p>
+<pre><code class="language-julia">using LinearAlgebra, RowEchelon</code></pre>
+<h3 id="basic_operations"><a href="#basic_operations" class="header-anchor">Basic Operations</a></h3>
+<p>Suppose we have two vectors \(\mathbf{u}\) and \(\mathbf{v}\) in \(\mathbb{R}^2\).</p>
+<pre><code class="language-julia">u &#61; &#91;3, 4&#93;
+v &#61; &#91;4, -2&#93;</code></pre>
+<p>We can perform basic operations such as addition, scalar multiplication, and inner products.</p>
+<pre><code class="language-julia">@show u &#43; v
+&gt; u &#43; v &#61; &#91;5, 9&#93;
+
+@show u - v
+&gt; u - v &#61; &#91;1, -1&#93;
+
+@show 3u &#43; 2v
+&gt; 3u &#43; 2v &#61; &#91;13, 22&#93;
+
+@show dot&#40;u, v&#41;
+&gt; dot&#40;u, v&#41; &#61; 26</code></pre>
+<p>We can determine the length of a vector using the <code>norm</code> function.</p>
+<pre><code class="language-julia">@show norm&#40;u&#41;
+&gt; norm&#40;u&#41; &#61; 5.0</code></pre>
+<p>We can apply the dot product formula,</p>
+\[ \mathbf{u}\cdot\mathbf{v} = \lVert \mathbf{u}\rVert \lVert \mathbf{v}\rVert \cos \theta\,,\]
+<p>to determine the angle between vectors.</p>
+<pre><code class="language-julia">@show cosθ &#61; dot&#40;u, v&#41; / &#40;norm&#40;u&#41;*norm&#40;v&#41;&#41;
+&gt; cosθ &#61; dot&#40;u, v&#41; / &#40;norm&#40;u&#41; * norm&#40;v&#41;&#41; &#61; 0.9656157585206697
+
+@show θ &#61; acos&#40;cosθ&#41;
+&gt; θ &#61; acos&#40;cosθ&#41; &#61; 0.26299473168091936
+
+@show rad2deg&#40;θ&#41;
+&gt; rad2deg&#40;θ&#41; &#61; 15.068488159492201</code></pre>
+<p>Suppose we have another vector, \(\mathbf{w}\), and we want to know if \(\mathbf{w}\) is in the span of \(\mathbf{u}\) and \(\mathbf{v}\), \(\text{span}(\mathbf{u}, \mathbf{v})\). In plain English, we want to know if there are some coefficients, \(\alpha\) and \(\beta\) which will satisfy the equation \(\alpha \mathbf{u} + \beta \mathbf{v} = \mathbf{w}\).</p>
+<pre><code class="language-julia">&#91; u v w &#93;
+&gt; 2×3 Matrix&#123;Int64&#125;:
+&gt;  3  2  5
+&gt;  4  5  2
+
+rref&#40;&#91;u v w&#93;&#41;
+&gt; 2×3 Matrix&#123;Float64&#125;:
+&gt;  1.0  0.0   3.0
+&gt;  0.0  1.0  -2.0
+
+&#40;α, β&#41; &#61; rref&#40;&#91;u v w&#93;&#41;&#91;:, 3&#93;
+@show α*u &#43; β*v &#61;&#61; w
+&gt; α * u &#43; β * v &#61;&#61; w &#61; true</code></pre>
+<blockquote>
+<p>We used the array slicing functionality to extract <em>all rows</em> for the 3rd column with <code>&#91;:, 3&#93;</code> and populated the \(\alpha\) and \(\beta\) variables through decomposition.</p>
+</blockquote>
+<p>Therefore, we know that \(\mathbf{w}\) is in the span of \(\mathbf{u}\) and \(\mathbf{v}\).</p>
+<h3 id="solving_a_mathbfx_mathbfb"><a href="#solving_a_mathbfx_mathbfb" class="header-anchor">Solving \(A \mathbf{x} = \mathbf{b}\)</a></h3>
+<p>It is easy to build matrices from the ground up or from a collection of vectors. We can solve the equation \(A \mathbf{x} = \mathbf{b}\) via row reduction or by inverses.</p>
+<p>Suppose we have a matrix, \(A\), and vector, \(\mathbf{b}\), defined as,</p>
+\[A = \begin{bmatrix*}[r] 1 & 2 \\ 0 & -1 \end{bmatrix*}\,, \ \mathbf{b} = \begin{bmatrix}2 \\ 4 \end{bmatrix}\,, \]
+<pre><code class="language-julia">A &#61; &#91; 1 2 ; 0 -1 &#93;
+&gt; 2×2 Matrix&#123;Int64&#125;:
+&gt;  1   2
+&gt;  0  -1
+
+b &#61; &#91; 2 ; 4 &#93;
+&gt; 2-element Vector&#123;Int64&#125;:
+&gt;  2
+&gt;  4</code></pre>
+<p>We can apply row reduction,</p>
+\[\begin{bmatrix*}[r] 1 & 2 & 2 \\ 0 & -1 & 4 \end{bmatrix*} \sim  \begin{bmatrix*}[r] 1 & 0 & 10 \\ 0 & 1 & -4 \end{bmatrix*} \]
+<pre><code class="language-julia">rref&#40;&#91; A b &#93;&#41;
+&gt; 2×3 Matrix&#123;Float64&#125;:
+&gt;  1.0  0.0  10.0
+&gt;  0.0  1.0  -4.0</code></pre>
+<p>or we can multiply \(\mathbf{b}\) by \(A^{-1}\) to solve the equation,</p>
+\[ \mathbf{x} = A^{-1}\mathbf{b} \,.\]
+<pre><code class="language-julia">inv&#40;A&#41;*b
+&gt; 2-element Vector&#123;Float64&#125;:
+&gt;  10.0
+&gt;  -4.0</code></pre>
+<h3 id="eigenvectors_and_eigenvalues"><a href="#eigenvectors_and_eigenvalues" class="header-anchor">Eigenvectors and Eigenvalues</a></h3>
+<p>For a matrix, \(A\), we are often interested in the eigenvectors and eigenvalues which satisfy the equation,</p>
+\[ A \mathbf{u} = \lambda \mathbf{u}\,. \]
+<p>We can quickly compute the eigenvectors and eigenvalues of a matrix, \(A\), using the <code>eigen</code> function.</p>
+<pre><code class="language-julia">&#40;&#40;λ1, λ2&#41;, K&#41; &#61; eigen&#40;A&#41;
+&gt; Eigen&#123;Float64, Float64, Matrix&#123;Float64&#125;, Vector&#123;Float64&#125;&#125;
+&gt; values:
+&gt; 2-element Vector&#123;Float64&#125;:
+&gt;  -1.0
+&gt;   1.0
+&gt; vectors:
+&gt; 2×2 Matrix&#123;Float64&#125;:
+&gt;  -0.707107  1.0
+&gt;   0.707107  0.0</code></pre>
+<p>We can verify that the eigenvectors and eigenvalues work.</p>
+<pre><code class="language-julia">@show A * K&#91;:, 1&#93; &#61;&#61; λ1 * K&#91;:, 1&#93;
+&gt; A * K&#91;:, 1&#93; &#61;&#61; λ1 * K&#91;:, 1&#93; &#61; true
+
+@show A * K&#91;:, 2&#93; &#61;&#61; λ2 * K&#91;:, 2&#93;
+A * K&#91;:, 2&#93; &#61;&#61; λ2 * K&#91;:, 2&#93; &#61; true</code></pre>
+<h3 id="other_common_operations_with_matrices"><a href="#other_common_operations_with_matrices" class="header-anchor">Other Common Operations with Matrices</a></h3>
+<p>The rank of a matrix is defined as the dimension of the vector space which is spanned by its columns. We can easily compute the rank of a matrix using the <code>rank</code> function.</p>
+<pre><code class="language-julia">@show rank&#40;A&#41;
+&gt; rank&#40;A&#41; &#61; 2</code></pre>
+<p>The trace of a matrix is defined as the sum of the diagonal elements and we can easily compute it using the <code>tr</code> function.</p>
+<pre><code class="language-julia">@show tr&#40;A&#41;
+&gt; tr&#40;A&#41; &#61; 0</code></pre>
+<p>The determinant is a function which yields a single, scalar value when applied to a matrix which tells us how a vector will scale when a matrix transformation is applied to it. We can compute it for any &#40;non-singular&#41; matrix in \(\mathbb{R}^n\) using the <code>det</code> function.</p>
+<pre><code class="language-julia">@show det&#40;A&#41;
+&gt; det&#40;A&#41; &#61; -1.0</code></pre>
+<p>The transpose of a matrix can be quickly generated by adding a single quote on the end of it.</p>
+<pre><code class="language-julia">A &#61; &#91; 8 -4 ; 2 -2&#93;
+&gt; 2×2 Matrix&#123;Int64&#125;:
+&gt;  8  -4
+&gt;  2  -2
+
+A&#39;
+&gt; 2×2 adjoint&#40;::Matrix&#123;Int64&#125;&#41; with eltype Int64:
+&gt;   8   2
+&gt;  -4  -2</code></pre>
+<h3 id="matrix_inverses"><a href="#matrix_inverses" class="header-anchor">Matrix Inverses</a></h3>
+<p>Finding the inverse of a matrix can be a long process for matrices larger than \(3 \times 3\).</p>
+<p>Recall that a matrix is only invertible if it&#39;s full rank and square. <em>Full rank</em> means that the column vectors are all linearly independent.</p>
+<p>For a \(2 \times 2\) matrix, we can quickly compute the inverse. If we have a matrix, \(A\), such that,</p>
+\[ A = \begin{bmatrix} a & b \\ c & d \end{bmatrix}\,,\]
+<p>then the inverse is given by,</p>
+\[ A^{-1} = \frac{1}{\det(A)}\begin{bmatrix*}[r] d & -b \\ -c & a \end{bmatrix*}\,.\]
+<p>In Julia, we can use the <code>inv</code> function to quickly compute the inverse of any &#40;non-singular&#41; \(n \times n\) matrix.</p>
+<pre><code class="language-julia">A &#61; &#91; 8 -4 ; 2 -2&#93;
+&gt; 2×2 Matrix&#123;Int64&#125;:
+&gt;  8  -4
+&gt;  2  -2
+
+inv&#40;A&#41;
+&gt; 2×2 Matrix&#123;Float64&#125;:
+&gt;  0.25  -0.5
+&gt;  0.25  -1.0</code></pre>
+<p>The other sure-fire way to find the inverse of a matrix, \(A\), is to concatenate an identity matrix to \(A\) and then row reduce until you get an identity matrix on the left and the inverse appears on the right. Unless there&#39;s an identifiable shortcut, for any matrix larger than \(2 \times 2\) where I need to find the inverse by hand, this is the method I use. It always works &#40;assuming the matrix is non-singular&#41; and is dumb simple to apply.</p>
+<p>We can use <code>I&#40;n&#41;</code> to create a \(n\times n\) identity matrix.</p>
+<pre><code class="language-language">A &#61; &#91; 8 -4 ; 2 -2&#93;
+
+rref&#40;&#91; A I&#40;2&#41; &#93;&#41;
+&gt; 2×4 Matrix&#123;Float64&#125;:
+&gt;  1.0  0.0  0.25  -0.5
+&gt;  0.0  1.0  0.25  -1.0</code></pre>
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: July 18, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

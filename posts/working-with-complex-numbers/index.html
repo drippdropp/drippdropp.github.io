@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+   <title>Null Maps</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="post_title"><a href="#post_title" class="header-anchor">Working with Complex Numbers</a></h1>
+<p>Complex numbers are one of those topics a lot of lay people don&#39;t understand but are ridiculously powerful and have numerous applications in the real world, despite being called &quot;imaginary numbers.&quot;</p>
+<p>A <em>complex number</em> is a mathematical object of the form,</p>
+\[ z = a + ib\,, \]
+<p>where \(i = \sqrt{-1}\). Often times when people are using quadratic formula, they may find that within the \(\sqrt{b^2 - 4ac}\), the \(4ac > b^2\) which results in a negative number being under the square root sign. If you&#39;re working purely with the reals &#40;or <em>real numbers</em>&#41;, then such a result would be <em>undefined</em>. However, if you&#39;re working in the set of complex numbers, then you can simply pull out the negative from the square root and convert it to an \(i\). In fact, since every complex number of the form \(z = x + i0\) is in the set of real numbers, the set of complex numbers, \(\mathbb{C}\), is a superset of the set of real numbers, \(\mathbb{R}\).</p>
+<blockquote>
+<p>While often written as \(z = a + ib\) or \(z = x + iy\), if you&#39;re a number theorist, you probably write complex numbers as \(s = \sigma + it\). Additionally, many electrical engineers tend to write complex numbers as \(z = x + jy\) since \(i\) is the typical variable used for <em>current</em>.</p>
+</blockquote>
+<p>We can instantiate complex numbers in Julia using two different approaches. While most languages use <code>i</code> and Python uses <code>j</code>, Julia uses <code>im</code>.</p>
+<pre><code class="language-julia">z1 &#61; Complex&#40;5, 2&#41;
+z2 &#61; 5 &#43; 2im
+
+@show z1 &#61;&#61; z2
+&gt; z1 &#61;&#61; z2 &#61; true</code></pre>
+<p>Some basic operations with Complex numbers.</p>
+<pre><code class="language-julia">z1 &#61; 3&#43;1im
+z2 &#61; -3&#43;7im
+z3 &#61; 9-1im
+
+# addition
+@show z1 &#43; z2
+&gt; z1 &#43; z2 &#61; 0 &#43; 8im
+
+# subtraction
+@show z1 - z2
+&gt; z1 - z2 &#61; 6 - 6im
+
+# complex multiplication
+@show z1 * z2
+&gt; z1 * z2 &#61; -16 &#43; 18im
+
+# complex division
+@show z1 / z2
+z1 / z2 &#61; -0.03448275862068964 - 0.4137931034482759im
+
+# the modulus &#40;or length&#41; of z2
+@show abs&#40;z2&#41;
+&gt; abs&#40;z2&#41; &#61; 7.615773105863909
+
+# adding the real and imaginary parts
+@show real&#40;z1&#41; &#43; imag&#40;z1&#41;
+&gt; real&#40;z1&#41; &#43; imag&#40;z1&#41; &#61; 4
+
+# the complex conjugate
+@show conj&#40;z1&#41;
+&gt; conj&#40;z1&#41; &#61; 3 - 1im</code></pre>
+<p>The modulus is defined as,</p>
+\[ |z| = \sqrt{\mathfrak{Re}(z)^2 + \mathfrak{Im}(z)^2} \]
+<p>Additionally, the modulus function is homomorphic as it follows that \(\phi(a\cdot b) = \phi(a)\cdot \phi(b)\).</p>
+<pre><code class="language-julia">function myabs&#40;z::Complex&#41;
+    &#40;realpart, imagpart&#41; &#61; &#40;real&#40;z&#41;, imag&#40;z&#41;&#41;
+    sqrt&#40;realpart^2 &#43; imagpart^2&#41;
+end
+
+@show myabs&#40;z1&#41; &#61;&#61; abs&#40;z1&#41;
+&gt; myabs&#40;z1&#41; &#61;&#61; abs&#40;z1&#41; &#61; true
+
+@show abs&#40;z1*z2&#41; &#61;&#61; abs&#40;z1&#41;*abs&#40;z2&#41;
+&gt; abs&#40;z1 * z2&#41; &#61;&#61; abs&#40;z1&#41; * abs&#40;z2&#41; &#61; true</code></pre>
+<p>We can see that the conjugate function is also homomorphic.</p>
+<pre><code class="language-julia">@show conj&#40;z1*z2&#41; &#61;&#61; conj&#40;z1&#41;*conj&#40;z2&#41;
+&gt; conj&#40;z1 * z2&#41; &#61;&#61; conj&#40;z1&#41; * conj&#40;z2&#41; &#61; true</code></pre>
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: June 19, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

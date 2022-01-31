@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+   <title>Null Maps</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="post_title"><a href="#post_title" class="header-anchor">Equivalence Classes</a></h1>
+<p>Given a set, \(S\) and an equivalence relation, \(\sim\), the equivalence class, \(\alpha\), is defined as,</p>
+\[ \{ x \in S | x \sim \alpha \}\,.\]
+<p>An equivalence relation on a set \(X\) must satisfy three properties.</p>
+<ol>
+<li><p>\(\alpha \sim \alpha\) for all \(\alpha\) in \(X\) &#40;reflexivity&#41;</p>
+</li>
+<li><p>\(\alpha \sim \beta\) implies \(\beta \sim \alpha\) for all \(\alpha\) and \(\beta\) in \(X\) &#40;symmetry&#41;</p>
+</li>
+<li><p>If \(\alpha \sim \beta\) and \(\beta \sim \gamma\), then \(\alpha \sim \gamma\) for all \(\alpha\), \(\beta\), and \(\gamma\) in \(X\) &#40;transitivity&#41;</p>
+</li>
+</ol>
+<p>Suppose we have a set \(S \subseteq \mathbb{Z}\) and \(X_i\), where \(i \in [ 0, N )\), are the equivalency classes. Then,</p>
+\[ S = \bigcup_{i = 0}^N X_i \,,\]
+<p>such that the infinite union of \(X_i\) covers \(S\) because each \(X_i\) consists of those integers where \(i\) equal \(k \in \mathbb{N}\) modulo \(N\).</p>
+<p>For example, suppose \(N = 3\). The set \(X_0\) consists of \(\{ \dots, -6, -3, 0, 3, 6, 9, \dots \}\), \(X_1\) consists of \(\{ \dots, -5, -2, 1, 4, 7, 10, \dots \}\), and \(X_2\) consists of \(\{ \dots, -4, -1, 2, 5, 8, 11, \dots \}\). These union of these three sets cover the entire set of integers.</p>
+<pre><code class="language-julia">function generate_equivclasses&#40;N; S&#41;
+    X &#61; Array&#123;Set&#123;eltype&#40;S&#41;&#125;, 1&#125;&#40;undef, N&#41;
+    for k in &#91;0, 1, 2&#93;
+        X&#91;k&#43;1&#93; &#61; Set&#40;filter&#40;x -&gt; mod&#40;x, N&#41; &#61;&#61; k, S&#41;&#41;
+    end
+    return X
+end
+
+N &#61; 3;
+S &#61; collect&#40;-15:15&#41;;
+
+X &#61; reduce&#40;&#40;iter, el&#41; -&gt; union&#40;iter, el&#41;, 
+        generate_equivclasses&#40;N, S&#61;S&#41;&#41;
+
+@show X
+&gt; X &#61; Set&#40;&#91;-12, -11, 5, 12, -3, -6, 8, 1, 0, 6, -5,
+&gt;  -1, 11, 9, -2, 14, 3, -15, 7, -8, -7, -9, 4, 15,
+&gt;  13, 2, 10, -10, -13, -4, -14&#93;&#41;
+
+@show X &#61;&#61; Set&#40;S&#41;
+&gt; X &#61;&#61; Set&#40;S&#41; &#61; true</code></pre>
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: June 19, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

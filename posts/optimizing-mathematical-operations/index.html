@@ -1,0 +1,42 @@
+<!doctype html> <html lang=en > <meta charset=UTF-8 > <meta name=viewport  content="width=device-width, initial-scale=1"> <link rel=stylesheet  href="/libs/katex/katex.min.css"> <link rel=stylesheet  href="/libs/highlight/github.min.css"> <link rel=preconnect  href="https://fonts.gstatic.com"> <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel=stylesheet > <link rel=stylesheet  href="/css/franklin.css"> <link rel=stylesheet  href="/css/poole_hyde.css"> <link rel=stylesheet  href="/css/nullmaps.css"> <style> html {font-size: 17px;} .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;} @media (min-width: 940px) { .franklin-content {width: 100%; margin-left: auto; margin-right: auto;} } @media (max-width: 768px) { .franklin-content {padding-left: 6%; padding-right: 6%;} } </style> <link rel=icon  href="/assets/favicon.ico"> <title>Null Maps</title> <div class=sidebar > <div class="container sidebar-sticky"> <div class=sidebar-about > <h1><a href="/">Null Maps</a></h1> <p class=lead >My Adventures in Math and Technology</p> </div> <nav class=sidebar-nav > <a class="sidebar-nav-item " href="/">Home</a> <a class="sidebar-nav-item " href="/posts/">Posts</a> <a class="sidebar-nav-item " href="/projects/">Projects</a> <a class="sidebar-nav-item " href="/about/">About</a> </nav> <p>&copy; Daniel Marvin.</p> </div> </div> <div class="content container"> <div class=franklin-content ><h1 id=post_title ><a href="#post_title" class=header-anchor >Optimizing Mathematical Operations</a></h1> <p>Modern developers, especially those without much of a mathematical background or those who have experience exclusively with modern languages like JavaScript and PHP, tend to write sloppy code without even realizing it.</p> <p>More specifically, they tend to fully take advantage of the fact that modern computers are really fast without considering a concept that I&#39;ve come to call <em>the Exponential Choice</em> problem. This means that a developer can make one bad decision or two bad decisions throughout their work on a particular project and not experience much of an impact. However, as they continue to make poor code choices, the impact to the project grows exponentially.</p> <p>Let&#39;s look at something as simple as computing a polynomial. Suppose we have a polynomial of degree \(3\) such as \(2x^3 - 6x^2 + 2x - 1\).</p> <pre><code class=language-julia ># using horner&#39;s method
+function f_1&#40;poly, x&#41;
+    result &#61; poly&#91;1&#93;
+    @inbounds for k in 1:length&#40;poly&#41;-1
+        @fastmath result &#61; result*x &#43; poly&#91;k&#43;1&#93;
+    end
+    return result
+end
+
+# using multiplications
+function f_2&#40;x&#41;
+    2*x*x*x - 6*x*x &#43; 2*x - 1
+end
+
+# using multiplications and powers
+@inline function f_3&#40;x&#41;
+    2*x^3 - 6*x^2 &#43; 2*x - 1
+end
+
+poly &#61; &#91; 2; -6; 2; -1&#93;
+x &#61; 3
+
+# horner&#39;s method -- compiled function
+@btime f_1&#40;poly, x&#41;
+
+# using multiplications -- compiled function
+@btime f_2&#40;x&#41;
+
+# using multiplications and powers -- compiled function
+@btime f_3&#40;x&#41;
+
+# using multiplications -- inline
+@btime 2x*x*x - 6x*x &#43; 2*x - 1
+
+# using multiplications -- inline
+@btime 2x*x*x - 6x*x &#43; 2*x - 1
+
+# using multiplications and powers -- inline/fastmath
+@btime @fastmath 2x^3 - 6x^2 &#43; 2x - 1
+
+# using multiplications and powers -- inline/fastmath
+@btime @fastmath 2x^3 - 6x^2 &#43; 2x - 1</code></pre> <div class=page-foot > <div class=copyright > &copy; Daniel Marvin. Last modified: June 19, 2021. </div> </div> </div> </div> <script src="/libs/katex/katex.min.js"></script> <script src="/libs/katex/auto-render.min.js"></script> <script>renderMathInElement(document.body)</script> <script src="/libs/highlight/highlight.pack.js"></script> <script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: ' '});</script>

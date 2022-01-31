@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+  <title>Null Maps</title>
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="pgre8677_problem_1__2"><a href="#pgre8677_problem_1__2" class="header-anchor">PGRE8677 Problem 1</a></h1>
+<p>A rock is thrown vertically upward with initial speed \(v_0\). Assume a friction force proportional to \(-\vect{v}\), where \(\vect{v}\) is the velocity of the rock, and neglect the buoyant force exerted by air. Which of the following is correct?</p>
+<p>A. The acceleration of the rock is always equal to \(\vect{g}\).</p>
+<p>B. The acceleration of the rock is equal to \(\vect{g}\) only at the top of the flight.</p>
+<p>C. The acceleration of the rock is always less then \(\vect{g}\).</p>
+<p>D. The speed of the rock upon return to its starting point is \(v_0\).</p>
+<p>E. The rock can attain a terminal speed greater than \(v_0\) before it returns to its starting point.</p>
+<h2 id="solution__2"><a href="#solution__2" class="header-anchor">Solution</a></h2>
+<p>With falling objects on Earth, we can model them pretty simply. If there was no wind resistance, then we can model the position as,</p>
+\[y(t) = y_0 + v_0 t - \frac{1}{2}gt\text{,}\]
+<p>where \(y(t)\) is the vertical position at time, \(t\), \(y_0\) is the initial position, \(v_0\) is the initial velocity &#40;positive if we are throwing the object upward&#41;, and g is the acceleration due to gravity, \(9.80665\).</p>
+<p>Let \(S \subseteq \mathbb R\) where \(y \in S\) is the position. Since we&#39;re working in \(\mathbb R\), \(\vect{y}\) has direction of \(+\) or \(-\). We can provide any initial position along \(\mathbb R\), the initial velocity scaled by \(t\) and since gravity is acting upon the object, \(g\) is the acceleration due to gravity which is scaled by the square of \(t\) and pulling the object back down towards the Earth. However, this isn&#39;t what we experience in the &quot;real world&quot; since we are dealing with wind resistance. Let&#39;s approach this a little differently.</p>
+<p>The total force is given by,</p>
+\[\sum \vect{F} = \vect{F}_\text{g} + \vect{F}_\text{air} = mg - ks(t)\text{,}\]
+<p>which gives us the differential equation,</p>
+\[mg - k\dot{y}(t) = m\ddot{y}(t)\text{,}\]
+<p>where \(m\) is the mass of the object, \(g\) is still the acceleration due to gravity, \(k\) is a constant of proportionality of the object, \(y\) is the position, \(\dot{y}\) is the velocity, and \(\ddot{y}\) is the acceleration.</p>
+<p>We can re-write &#40;3&#41; as,</p>
+\( \frac{mg}{k} - \dot{y}\)
+\[ \ddot{y}(t) = \frac{k}{m}\bigg((t)\bigg) \]
+<p>We can introduce an auxilliary function, \(p(t) = \frac{mg}{k} - y(t)\) which means that \(\dot{p}(t) = -\dot{y}(t)\). Exclusively in terms of \(p(t)\),</p>
+\[-\dot{p}(t) = \frac{k}{m}p(t)\]
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: July 20, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

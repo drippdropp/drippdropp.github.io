@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+   <title>Null Maps</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="post_title__2"><a href="#post_title__2" class="header-anchor">Using Taylor Series</a></h1>
+\[ f(x) = f(0) + \frac{f^\prime(0)}{1!}x + \cdots + \frac{f^{(n-1)}(0)}{(n-1)!} x^{n-1} + \frac{f^{(n)}(0)}{n!} x^{n} = f(0) + \sum_{k=1}^n \frac{f^{(k)}(0)}{k!} x^k\,,\]
+<p>As a refresher, I&#39;ll write out the Taylor series expansion of \(\sin(x)\) with four terms to showcase how it works.</p>
+<pre><code class="language-julia">f&#40;x&#41; &#61; sin&#40;x&#41;
+f′&#40;x&#41; &#61; cos&#40;x&#41;
+f″&#40;x&#41; &#61; -sin&#40;x&#41;
+f‴&#40;x&#41; &#61; -cos&#40;x&#41;
+
+taylorsin&#40;x&#41; &#61; f&#40;0&#41; &#43; f′&#40;0&#41;/factorial&#40;1&#41; * x &#43; 
+               f″&#40;0&#41;/factorial&#40;2&#41; * x^2 &#43; 
+               f‴&#40;0&#41;/factorial&#40;3&#41; * x^3
+
+plot&#40;f&#41;
+plot&#33;&#40;taylorsin, ylim&#61;&#40;-1.5, 1.5&#41;&#41;</code></pre>
+<p><img src="/assets/taylorseries-ts.png" alt="" /></p>
+<p>It&#39;s clear from the plot that from \(-1 \leq x \leq 1\), our polynomial expansion is a really good approximation of the \(\sin(x)\) function. More terms will improve the approximation for a larger interval.</p>
+<p>While the above plot shows approximating about the origin, we can also approximate about other points. We&#39;ll write out the expansion approximating the point \(a\). Instead of all of our evaluations at \(f(0)\), we&#39;ll evaluate at \(f(a)\). And instead of \((x-0) = x\) for the \(x\) components, we&#39;ll use \((x - a)^j\). Therefore, when \(x = a\), the term goes to zero like before. Suppose \(a = 2\).</p>
+<pre><code class="language-julia">a &#61; 2
+
+taylorsin&#40;x&#41; &#61; f&#40;a&#41; &#43; f′&#40;a&#41;/factorial&#40;1&#41; * &#40;x - a&#41; &#43; 
+               f″&#40;a&#41;/factorial&#40;2&#41; * &#40;x - a&#41;^2 &#43; 
+               f‴&#40;a&#41;/factorial&#40;3&#41; * &#40;x - a&#41;^3
+
+plot&#40;f&#41;
+plot&#33;&#40;taylorsin, ylim&#61;&#40;-1.5, 1.5&#41;&#41;</code></pre>
+<p><img src="/assets/taylorseries-ts-a.png" alt="" /></p>
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: June 22, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

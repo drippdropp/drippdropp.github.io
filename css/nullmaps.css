@@ -1,0 +1,797 @@
+/*$base-color: #2a2a2a;
+$primary-color: #343d46;
+$secondary-color: #4f5b66;
+$tertiary-color: #65737e;
+$accent-light: #a7adba;
+$accent-lighter: #c0c5ce;
+*/
+
+h1 {
+  padding-bottom: 0.5em;
+  border-bottom: 1px solid #333;
+  margin-top: 1.5em;
+  margin-bottom: 1em;
+}
+
+span.caption {
+  font-size:  9pt;
+}
+
+span.tag-header {
+  margin: 5px;
+  padding:  12px;
+  border:  1px solid #666;
+  border-radius: 6px;
+}
+
+div.side-box {
+    padding:  12px;
+    margin:  16px;
+    border:  1px solid #333;
+    border-radius:  2px;
+}
+
+.franklin-content ol {
+  margin:  1px;
+  border-left:  1px dashed #888;
+}
+
+.franklin-content ol li {
+  list-style-position: outside;
+  margin-left:  2px;
+  padding-left: 16px;
+  padding-bottom: 2px;
+  margin-bottom: 3px;
+}
+
+span.date-of-post {
+  display: block;
+  float: right;
+  margin-bottom: 12px;
+  padding: 16px; }
+
+ul.posts {
+  padding-left: 20px;
+  padding-right: 30px; }
+
+li.post-entry {
+  list-style-type: none;
+  border-top: 6px;
+  padding-top: 16px;
+ }
+li.post-entry a.post-link,
+li.post-entry a.post-link:active,
+li.post-entry a.post-link:visited,
+li.post-entry a.post-link:hover {
+  border-bottom: 32px;
+  color: #333333;
+  font-size: 0.9em;
+}
+
+div.posts {
+  margin-top:  16px;
+  padding-left: 20px;
+  padding-right: 30px; 
+  margin-bottom:  60px;
+  /*columns:  2 200px;
+  column-count:  2;
+  column-width:  50%;*/
+}
+
+div.post-entry {
+  /* float: left; */
+  margin-top:  4px;
+  padding-top: 16px;
+  margin-bottom: 12px;
+ }
+
+div.post-entry a.post-link,
+div.post-entry a.post-link:active,
+div.post-entry a.post-link:visited,
+div.post-entry a.post-link:hover {
+  border-bottom: 32px;
+  color: #333333;
+  font-size: 0.9em;
+}
+
+ul.post-tags {
+  padding: 4px 0px; 
+  min-width: 300px;
+}
+
+ul.post-tags li.post-tag {
+  display: inline-block;
+  float: left; }
+
+ul.post-tags li.post-tag a.emacs { 
+  background: #4b4b4b; 
+  color: #E3E3E3;
+  border: 1px solid #65737e;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+
+ul.post-tags li.post-tag a.general-relativity { 
+  background: #4b4b4b; 
+  color: #E3E3E3;
+  border: 1px solid #65737e;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+
+ul.post-tags li.post-tag a.meta { 
+  background: #ad4b4b; 
+  color: #E3E3E3;
+  border: 1px solid #65737e;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+
+ul.post-tags li.post-tag a.politics { 
+  background: #4bad4b; 
+  color: #E3E3E3;
+  border: 1px solid #65737e;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+
+ul.post-tags li.post-tag a.lisp { 
+  background: #924b4b; 
+  color: #E3E3E3;
+  border: 1px solid #65737e;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+
+ul.post-tags li.post-tag a.functional-programming { 
+  background: #442287; 
+  color: #E3E3E3;
+  border: 1px solid #65737e;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+
+
+ul.post-tags li.post-tag a.haskell-bites { 
+  background: #47224b; 
+  color: #E3E3E3;
+  border: 1px solid #65737e;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+
+ul.post-tags li.post-tag a.code { 
+  background: #023e8a; 
+  color: #E3E3E3;
+  border: 1px solid #555555;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+
+ul.post-tags li.post-tag a.project-euler { 
+  background: #924b4b; 
+  color: #E3E3E3;
+  border: 1px solid #555555;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+
+ul.post-tags li.post-tag a.haskell { 
+  background: #00b4d8; 
+  color: #E3E3E3;
+  border: 1px solid #555555;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  box-shadow:  0px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+
+ul.post-tags li.post-tag a.julia { 
+  background: #00b4d8; 
+  color: #E3E3E3;
+  border: 1px solid #555555;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  box-shadow:  0px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+
+ul.post-tags li.post-tag a.trigonometry { 
+  background: #4bad4b; 
+  color: #E3E3E3;
+  border: 1px solid #65737e;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+ul.post-tags li.post-tag a.physics { 
+  background: #adad4b; 
+  color: #E3E3E3;
+  border: 1px solid #65737e;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+
+ul.post-tags li.post-tag a.computational-astronomy { 
+  background: #adad4b; 
+  color: #E3E3E3;
+  border: 1px solid #65737e;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+
+ul.post-tags li.post-tag a.probability { 
+  background: #adad4b; 
+  color: #E3E3E3;
+  border: 1px solid #65737e;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+
+ul.post-tags li.post-tag a.mathematics { 
+  background: #92ad4b; 
+  color: #E3E3E3;
+  border: 1px solid #65737e;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+
+ul.post-tags li.post-tag a.math { 
+  background: #92ad4b; 
+  color: #E3E3E3;
+  border: 1px solid #65737e;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+
+ul.post-tags li.post-tag a.graph-theory { 
+  background: #92ad4b; 
+  color: #E3E3E3;
+  border: 1px solid #65737e;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+
+ul.post-tags li.post-tag a.calculus { 
+  background: #92ad4b; 
+  color: #E3E3E3;
+  border: 1px solid #65737e;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+
+ul.post-tags li.post-tag a.divisibility { 
+  background: #92ad4b; 
+  color: #E3E3E3;
+  border: 1px solid #65737e;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+
+ul.post-tags li.post-tag a.integration { 
+  background: #92ad4b; 
+  color: #E3E3E3;
+  border: 1px solid #65737e;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+
+ul.post-tags li.post-tag a.sympy { 
+  background: #92ad4b; 
+  color: #E3E3E3;
+  border: 1px solid #65737e;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+
+
+ul.post-tags li.post-tag a.linear-algebra { 
+  background: #4b924b; 
+  color: #E3E3E3;
+  border: 1px solid #555555;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+ul.post-tags li.post-tag a.julia-bites { 
+  background: #ad924b; 
+  color: #E3E3E3;
+  border: 1px solid #555555;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+
+ul.post-tags li.post-tag a.computation { 
+  background: #ad924b; 
+  color: #E3E3E3;
+  border: 1px solid #65737e;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+
+ul.post-tags li.post-tag a.number-theory { 
+  background: #92924b; 
+  color: #E3E3E3;
+  border: 1px solid #65737e;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+ul.post-tags li.post-tag a.astronomy { 
+  background: #4b4bad; 
+  color: #E3E3E3;
+  border: 1px solid #65737e;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+ul.post-tags li.post-tag a.numerical-methods { 
+  background: #ad4bad; 
+  color: #E3E3E3;
+  border: 1px solid #65737e;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+ul.post-tags li.post-tag a.cryptography { 
+  background: #924bad; 
+  color: #E3E3E3;
+  border: 1px solid #65737e;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+ul.post-tags li.post-tag a.research { 
+  background: #4badad; 
+  color: #E3E3E3;
+  border: 1px solid #65737e;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+ul.post-tags li.post-tag a.computer-science { 
+  background: #adadad; 
+  color: #E3E3E3;
+  border: 1px solid #65737e;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+ul.post-tags li.post-tag a.differential-equations { 
+  background: #92adad; 
+  color: #E3E3E3;
+  border: 1px solid #65737e;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+ul.post-tags li.post-tag a.statistics { 
+  background: #4b92ad; 
+  color: #E3E3E3;
+  border: 1px solid #65737e;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+ul.post-tags li.post-tag a.analytic-geometry { 
+  background: #ad92ad; 
+  color: #E3E3E3;
+  border: 1px solid #65737e;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+ul.post-tags li.post-tag a.optimizations { 
+  background: #9292ad; 
+  color: #E3E3E3;
+  border: 1px solid #65737e;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+ul.post-tags li.post-tag a.opinions { 
+  background: #4b4b92; 
+  color: #E3E3E3;
+  border: 1px solid #65737e;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+ul.post-tags li.post-tag a.data-structures { 
+  background: #ad4b92; 
+  color: #E3E3E3;
+  border: 1px solid #65737e;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+ul.post-tags li.post-tag a.data-science { 
+  background: #924b92; 
+  color: #E3E3E3;
+  border: 1px solid #555555;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+ul.post-tags li.post-tag a.c { 
+  background: #4bad92; 
+  color: #E3E3E3;
+  border: 1px solid #555555;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+ul.post-tags li.post-tag a.algorithms { 
+  background: #005f73; 
+  color: #E3E3E3;
+  border: 1px solid #555555;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+ul.post-tags li.post-tag a.system-operations { 
+  background: #92ad92; 
+  color: #E3E3E3;
+  border: 1px solid #555555;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+ul.post-tags li.post-tag a.postgresql { 
+  background: #4b9292; 
+  color: #E3E3E3;
+  border: 1px solid #555555;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+ul.post-tags li.post-tag a.linux-os { 
+  background: #ad9292; 
+  color: #E3E3E3;
+  border: 1px solid #555555;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+ul.post-tags li.post-tag a.security { 
+  background: #929292; 
+  color: #E3E3E3;
+  border: 1px solid #555555;
+  border-right: 16px;
+  border-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight:  bold;
+  text-decoration: none;
+  text-align: center;
+  margin: 4px 2px;
+  padding: 3px 8px;
+}
+
+span.post-date {
+  font-size: 0.8em;
+  display: block;
+  float: right;
+  margin-left: 10px 40px;
+  padding-left: 40px 40px; }
+
+p.micro {
+  border-top: 1px solid #eeeeee;
+  padding-top: 4px;
+  padding-bottom: 8px;
+  font-size: 0.8em;
+  color: #444444; }
+
+div.opening {
+    border-top: 1px dashed #a7adba;
+    border-bottom: 1px dashed #a7adba;
+}
+
+p.micro {
+    border-top: 1px solid #eeeeee;
+    padding-top: 4px;
+    padding-bottom: 8px;
+    font-size: 0.8em;
+    color: #444444;
+}
+
+.image-frame {
+    padding: 0px; !important
+}
+
+img {
+  border: 2px solid #555;
+  margin:  28px 20px 28px 20px;
+  padding:  2px;
+  width: 90%;
+  text-align: center;
+}
+
+img.title-image {
+  border:  0;
+}
+
+.img-small img {
+  width: 50%;
+  text-align: center;
+  padding-left: 20%;
+}

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+   <title>Null Maps</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="post_title"><a href="#post_title" class="header-anchor">Indexing from One</a></h1>
+<p>With the exception of Matlab &#40;and Octave&#41;, which the 1-indexing behavior is inherited from, just about every other programming language indexes arrays from 0. So common is this practice that it&#39;s the origin of the claim that mathematicians do not include \(0\) in the set of natural numbers, but computer scientists do&#33;</p>
+
+<div class="side-box">
+
+<p>As a quick aside, I actually think that 0 does not belong in the set of natural numbers. If you fundamentally think about what the natural numbers are, they are counting numbers and they do not include any negative numbers because we are only representing that which exists, not that which does not exist.</p>
+<p>For example, if I have four cows in front of me, I am going to count them, one cow, two cow, three cow, four cow. I don&#39;t look at an empty field and think zero cows. If there are no cows, then I&#39;m not counting any cows&#33; I can think I have zero cows, but there&#39;s no need to represent that which has no presence so I&#39;m not recording the lack of any cows being present in my field.</p>
+<p>If I want to represent things which do <em>and</em> do not exist, then I would use the integers. Because in such a case I&#39;ve expanded my counting set to include not only the cows which do exist, but the cows which do not exist as well.</p>
+
+</div>
+
+<p>Why do computer scientists &#40;and software engineers&#41; like 0-indexing and why does it make more sense? Because it simplifies a lot of index calculations. I personally find a lot of value in 0-indexing, however I imagine the 1-indexing practice was inherited to simplify the migration of Matlab/Octave code into Julia. As great as a bunch of indie languages may be, there&#39;s a &quot;dark side&quot; to popularizing a language and it being ultimately accepted by the masses which has a lot to do with who picks it up. The harsh reality is that sometimes design choices may go into a language for the sake of it getting picked up and a lot of Julia&#39;s early adopters were Matlab users. I imagine a lot of Matlab users were like, &quot;well, it&#39;s super easy for me to pick up Julia because it has all of these features I use and love from Matlab, plus it does all this other great stuff too.&quot; This is likely a similar mantra of the adopters which migrated to Julia from Python. </p>
+<p>This is one of the few features of Julia which I am not ecstatic about, but I suffer silently because it&#39;s the <em>single</em> aspect of the language with which I don&#39;t find immense value.</p>
+<p>Now, one could also argue that a lot of situations where one ends up doing more complicated index computations should be avoid in Julia as there are often other ways to accomplish such tasks, so the impact should be low. In fact, for most data scientists, one will rarely deal with the challenges associated with 1-indexing. However, when recently writing up the <a href="/posts/binary-search/">Binary Search</a> post, I was re-introduced to the complications of 1-indexing.</p>
+<p>An example is when you&#39;re writing crypto code which uses the modulo operator to convert numbers into letters.</p>
+<pre><code class="language-c">std::vector&lt;unsigned long&gt; message &#61; get_message&#40;&#41;;
+std::vector&lt;unsigned long&gt; output;
+
+for &#40;size_t idx &#61; 0; idx &lt; message.size&#40;&#41;; idx&#43;&#43;&#41; &#123;
+	output.push_back&#40;alphabet&#91;message&#91;idx&#93; &#37; 26&#93;&#41;;
+&#125;</code></pre>
+<p>Migrating this code into Julia isn&#39;t as straight-forward because it will throw an exception everytime I hit a multiple of 26. Instead of that pointing to the first letter of the alphabet, I would need to add a <code>&#43; 1</code> to line it up properly, which complicates matters a bit.</p>
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: June 19, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

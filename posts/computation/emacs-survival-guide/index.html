@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+  <title>Null Maps</title>
+</head>
+<body>
+<div class="sidebar sidebar-bg">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="an_emacs_survival_guide"><a href="#an_emacs_survival_guide" class="header-anchor">An Emacs Survival Guide</a></h1>
+<p>I expect the learning curve with Emacs is a core reason why people tend to not use it with the same exhuberance with which other text editing software and IDEs are utilized. While it has become less common for modern developers to use classic editors like Emacs and Vim, Emacs has even less of a following than its &quot;evil&quot; rival. It really is a shame too, because Emacs is truly the classic workhorse in just about every possible way.</p>
+<p>I won&#39;t lie, it took me a while to get on the Emacs train. Over the years, I&#39;ve always had a general preferencee for simplicity over complexity. It&#39;s great to have a lot of nice features, but ultimately I&#39;m looking for a simple tool to edit text. This is where apps like SublimeText, BBEdit and TextWrangler, Notepad&#43;&#43;, Kedit, and similar really shine. The interfaces aren&#39;t bulky, you can edit text, and, well, what else do you really want? Maybe  a <em>little</em> more.</p>
+<p>When I&#39;m progamming, it&#39;s definitely nice to have a linter. As much as I prefer statically-typed, compiled languages and I know a portion of the development process includes getting put in my place by the compiler, it&#39;s helpful to have a tool to catch errors during development. Similarly, when I&#39;m writing research papers or blog posts, it&#39;s definitely nice to have a spell checker. It&#39;s not that I can&#39;t spell, but rather I type pretty fast and that&#39;s just naturally conducive to typos.</p>
+<p>And, since my projects rarely consist of a single file, it&#39;s nice to have some sort of tool to manage the project as a whole. Searching within the project, version control tools, being able to quickly open and close a set of files, etc.</p>
+<p>As it turns out, there are actually a lot of tools which offer value. And in fact, while there are many of these tools which are available out-of-the-box, the beauty of Emacs is that as a user, you have the ability to customize to your heart&#39;s content.</p>
+<h2 id="managing_the_learning_curve"><a href="#managing_the_learning_curve" class="header-anchor">Managing the Learning Curve</a></h2>
+<p>While it <em>is</em> true that Emacs can be complicated, we also have the ability to get information in real time as we need it. Let&#39;s identify some basic functionality.</p>
+<p>The most important command is going to be our <em>trap door</em> command, <code>C-g</code> which is how you cancel. Suppose you start opening a file and you see the find file interface in the mini-buffer, but you don&#39;t actually want to find the file – you just hit <code>C-g</code>.</p>
+<table><tr><th align="left">Action</th><th align="left">Command</th><th align="left">Lisp Function</th></tr><tr><td align="left">Open a file</td><td align="left"><code>C-x C-f</code></td><td align="left"><code>find-file</code></td></tr><tr><td align="left">Save a file</td><td align="left"><code>C-x C-s</code></td><td align="left"><code>save-buffer</code></td></tr><tr><td align="left">Move to the beginning of the line</td><td align="left"><code>C-a</code></td><td align="left"><code>beginning-of-visual-line</code></td></tr><tr><td align="left">Move to the end of the line</td><td align="left"><code>C-e</code></td><td align="left"><code>end-of-visual-line</code></td></tr><tr><td align="left">Move down by paragraph</td><td align="left"><code>C-v</code></td><td align="left"><code>scroll-down-command</code></td></tr><tr><td align="left">Undo Modification</td><td align="left"><code>C-/</code> or <code>C-x u</code></td><td align="left"><code>undo</code></td></tr><tr><td align="left">Move up by paragraph</td><td align="left"><code>M-v</code></td><td align="left"><code>scroll-up-command</code></td></tr><tr><td align="left">Quit Emacs</td><td align="left"><code>C-x C-c</code></td><td align="left"><code>save-buffers-kill-terminal</code></td></tr></table>
+<p>The first point to mention is the command notation. For example, if I want to open a file, I use <code>C-x C-f</code> which means to execute <code>ctrl</code>&#43;<code>x</code> followed by <code>ctrl</code>&#43;<code>f</code>. This is called a <em>binding</em> or <em>key binding</em> and means that we are associating the command sequence <code>C-x C-f</code> to a lisp function <code>find-file</code>.</p>
+<p>Suppose we wanted to customize one of our key bindings; we can easily do this by writing a line of lisp code which we store in an initialization file. As an example, I tend to use the command to move backwards and forwards by a single word a great deal. Out of the box, this is bound to <code>M-f</code> for move forward by one word and <code>M-b</code> for move back by one word. However, given how I tend to hold my fingers over the keyboard &#40;I actually re-map the caps lock to <code>ctrl</code>&#41;, I find these bindings rather uncomfortable. Additionally, as a Mac user, I have grown accustomed to using &#39;option&#39; along with the left and right keys to accomplish this. I also tend to use <code>Command</code> along with the left and right keys to move to the beginning and end of the lines. I don&#39;t want to stop using <code>C-a</code> and <code>C-e</code>, but I do want to add some additional key bindings.</p>
+<pre><code class="language-lisp">&#40;global-set-key &#40;kbd &quot;s-&lt;left&gt;&quot;&#41; &#39;beginning-of-visual-line&#41;
+&#40;global-set-key &#40;kbd &quot;s-&lt;right&gt;&quot;&#41; &#39;end-of-visual-line&#41;
+&#40;global-set-key &#40;kbd &quot;M-&lt;left&gt;&quot;&#41; &#39;backward-word&#41;
+&#40;global-set-key &#40;kbd &quot;M-&lt;right&gt;&quot;&#41; &#39;forward-word&#41;</code></pre>
+<p>In order to reference the OSX &quot;Command&quot; key, we use <code>s</code>, so <code>CMD</code> with the left arrow key is expressed by <code>s-&lt;left&gt;</code>.</p>
+<h2 id="using_emacs_packages"><a href="#using_emacs_packages" class="header-anchor">Using Emacs Packages</a></h2>
+<p>We&#39;ve been discussing some of the most important and most helpful commands in Emacs for basic editing and use, but it&#39;s important to remember that Emacs has a rich history and a large community – there are a lot of packages which already do a lot of great things and customize and improve some of the standard commands.</p>
+<p>Essentially, Emacs has these things called &quot;modes&quot; &#40;majors and minors&#41; and they are libraries of code which you can turn on or off. For example, when I&#39;m working with a Julia file, I use <code>julia-mode</code> and <code>julia-snail-mode</code>. The previous handles things like syntax highlighting and Julia-specific code indenting. The latter is for running a Julia REPL process through a vterm and executing code. This means that I have a general workflow where I can have two or more windows where one or more are whatever files I&#39;m actively working on and the other one is a Julia REPL. When I&#39;m in a <code>jl</code> file, my distribution automatically turns on <code>julia-mode</code> and <code>julia-snail-mode</code> so I can execute <code>C-c C-z</code> to launch a REPL and then in my Julia file, I can execute <code>C-c C-l</code> to run a single line of code or I can mark a region, meaning highlighting a section of code, and use <code>C-c C-r</code>  to execute the region.</p>
+<p>I haven&#39;t read through the code. but what&#39;s probably happening is <code>C-c C-l</code> copies the current line from the <code>jl</code> file and inserts it into the REPL process followed by a newline to execute it. This is what makes Emacs so powerful – lots of simple solutions. There&#39;s something similar for Ruby projects, C projects, OCaml projects, Python projects, etc. Stuff to make the code look right, maybe handle builds or compiling. Then there are packages like <code>magit</code> which handle git-related things like creating branches, committing code, and much more.</p>
+<p>Point is, there are lots of packages you can install which will make your Emacs distribution as robust as you like and you can pull it off without knowing much &#40;if any&#41; Lisp. But, since we&#39;re talking about getting up and running quickly, there are a couple of super helpful packages which I want to mention.</p>
+<h3 id="a_hrefhttpsgithubcomjustburemacs-which-keywhich-key"><a href="#a_hrefhttpsgithubcomjustburemacs-which-keywhich-key" class="header-anchor"><a href="https://github.com/justbur/emacs-which-key"><code>which-key</code></a></a></h3>
+<p>One of the most challenging aspects of getting comfortable with Emacs is remembering all of the key sequences and there can be a lot. Just working on my blog, I&#39;m generally running at least four or five modes in each file with robust key sequences. This is where <code>which-key</code> comes in. Suppose you know to execute a line of code in <code>julia-snail</code> starts with <code>C-c</code>  but you can&#39;t remember the next step or steps. As you hit <code>C-c</code>, the mini-buffer displays every command that starts with <code>C-c</code> and the remaining keys for those commands.</p>
+<h3 id="a_hrefhttpsgithubcombbatsovprojectileprojectile"><a href="#a_hrefhttpsgithubcombbatsovprojectileprojectile" class="header-anchor"><a href="https://github.com/bbatsov/projectile"><code>projectile</code></a></a></h3>
+<p>One of the main reasons people work with big, clunky IDEs is because they can easily maneuver around a project, meaning finding the files they&#39;re looking for, maybe grepping within a directory subtree, and ultimately working with a contained set of files. This what <code>projectile</code> is for. You can manually define what a project includes, but a <code>.git</code> initialized directory is all you need.</p>
+<h3 id="a_hrefhttpsgithubcomjaypeiemacs-neotreeneotree"><a href="#a_hrefhttpsgithubcomjaypeiemacs-neotreeneotree" class="header-anchor"><a href="https://github.com/jaypei/emacs-neotree"><code>neotree</code></a></a></h3>
+<p>Another helpful component that most IDEs have is a nice tree-structure for a project, so you can see all of the files and access them quickly. <code>neotree</code> creates a side panel which contains a nice directory tree with the ability to toggle sub-directories opened or closed, open files quickly, and create and delete.</p>
+<h3 id="a_hrefhttpsgithubcomabo-aboswiperivy_counsel_and_swiper"><a href="#a_hrefhttpsgithubcomabo-aboswiperivy_counsel_and_swiper" class="header-anchor"><a href="https://github.com/abo-abo/swiper"><code>ivy</code>, <code>counsel</code>, and <code>swiper</code></a></a></h3>
+<p>Searching and auto-completion are also core functions of any well-tuned development environment. I use a combination of <code>ivy</code>, <code>counsel</code>, and <code>swiper</code>. Together these are a really powerful combination of tools in general, but as a point of note, Swiper solves a big problem. Out of the box, Emacs has separate forward and reverse searching. While there is something to be said on improved efficiency if you indeed know what you&#39;re looking for is above or below your current point, with most modern text editors there is a single <code>find</code> function and we get that from <code>swiper</code>.</p>
+<p>I&#39;ve actually taken it a step further with <code>avy</code>, but I wouldn&#39;t recommend including <code>avy</code> into your tools until you&#39;re more comfortable with Emacs.</p>
+<h3 id="a_hrefhttpsgithubcomjwiegleyuse-packageuse-package"><a href="#a_hrefhttpsgithubcomjwiegleyuse-packageuse-package" class="header-anchor"><a href="https://github.com/jwiegley/use-package"><code>use-package</code></a></a></h3>
+<p><code>use-package</code> is something that will make your life a lot easier and keep your initialization files a lot cleaner once you really dive in. It&#39;s basically a macro for requiring packages. What is particularly nice about using it comes down to being able to handle key binds, config, and requirement deferring all in a nice, clean way.</p>
+<p>I have a very little bit of initialization code in <code>early-init.el</code> and <code>init.el</code>, a collection of core &quot;kernel&quot; files, and then I house all of my includes as separate files or separate groupings of &quot;modules&quot; which all use <code>use-package</code>.</p>
+<h2 id="customize_as_little_or_as_much_as_you_want"><a href="#customize_as_little_or_as_much_as_you_want" class="header-anchor">Customize As Little or As Much As You Want</a></h2>
+<p>Emacs does a lot out of the box and you don&#39;t <em>need</em> to be able to write or read Elisp to be productive with it. There are also some great pre-configured distributions available that combine a solid set of packages to get you up and running quickly such as <a href="https://github.com/bbatsov/prelude">Prelude</a> or <a href="https://github.com/daviderestivo/galactic-emacs">Galactic Emacs</a>.</p>
+<p>However, if you&#39;re willing to learn some Lisp and customize a little further according to your specific needs, you can really supercharge your workflow and have a lot of fun at the same time.</p>
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: July 19, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        
+
+
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+   <title>Null Maps</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="post_title"><a href="#post_title" class="header-anchor">Project Euler Solution to Problem 15</a></h1>
+<p>The <a href="https://projecteuler.net/problem&#61;15">15th problem</a> on <a href="https://projecteuler.net">Project Euler</a> states,</p>
+<p>&quot;Starting in the top left corner of a 2×2 grid, and only being able to move to the right and down, there are exactly 6 routes to the bottom right corner.&quot;</p>
+<p><img src="/assets/projecteuler-15.png" alt="" /></p>
+<p>Finally, it poses the question, &quot;How many such routes are there through a 20×20 grid?&quot;</p>
+<p>There are lots of ways to programmatically find the solution to this problem, however there&#39;s no good reason to waste the cycles when we can easily apply mathematics.</p>
+<p>We use the &quot;\(n\) choose \(k\)&quot; tool from combinatorics which is defined as,</p>
+\[\binom{n}{k} = \frac{n!}{k!(n-k)!}\,.\]
+<p>This formula tells us the number of different ways we can select \(k\) elements from \(n\) total elements.</p>
+<p>Let&#39;s take the simple example we are given first, that of a \(2 \times 2\) grid. Why are there six possible routes?</p>
+<p>At each new position, we can branch in two possible ways, down or right. This means that we want to know how many ways can move given a total of 2 possible movements? Therefore, for any grid of \(n \times n\), we have the formula,</p>
+\[\binom{2n}{n}\,.\]
+<p>To solve the problem, we use Julia&#39;s <code>binomial</code> function from the standard library.</p>
+<pre><code class="language-julia">n &#61; 20
+@time binomial&#40;2n, n&#41;
+
+&gt;   0.000001 seconds
+&gt; 137846528820</code></pre>
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: June 26, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

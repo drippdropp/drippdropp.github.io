@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+   <title>Null Maps</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="post_title"><a href="#post_title" class="header-anchor">Norms</a></h1>
+<p><em>Norms</em> are a generalization of a length function and ultimately are used for computing the length of vectors in an abstract vector space.</p>
+<p>Let \(V\) be an abstract vector space over a field \(\mathbb{F}\). The <em>norm</em> is a function, \(\eta : V \rightarrow \mathbb{R}\) such that,</p>
+<ol>
+<li><p>\(\eta(x + y) \leq \eta(x) + \eta(y)\) for all \(x, y\) in \(V\).</p>
+</li>
+<li><p>\(\eta(\alpha x) = \vert \alpha \vert \eta(x)\) for all \(x\) in \(V\) and \(\alpha\) in \(\mathbb{F}\).</p>
+</li>
+<li><p>For all \(x\) in \(V\), \(\eta(x) = 0\) if and only if \(x = 0\).</p>
+</li>
+</ol>
+<blockquote>
+<p>For each of the following norms I discuss below, I&#39;ve provided an implementation in Julia. That being said, there&#39;s a great package <code>Distances</code> which includes all of these and more. While my implementations are good for solidifying the concepts behind the individual functions, they are likely not as efficient as those defined in <code>Distances</code>.</p>
+</blockquote>
+<h3 id="absolute_value_norm"><a href="#absolute_value_norm" class="header-anchor">Absolute Value Norm</a></h3>
+<p>The absolute value function,</p>
+\[ \eta(x) = \vert x \vert\,. \]
+<p>In \(1\)-dimensional space, the vector which extends from the origin to \(\pm x\) has a length of \(x\).</p>
+<p><img src="/assets/absolute-value-norm.png" alt="" /></p>
+<p>The vector \(\pm 4\) has a length of \(4\).</p>
+<h3 id="ell1_norm"><a href="#ell1_norm" class="header-anchor">\(\ell^1\) Norm</a></h3>
+<p>The \(\ell^1\) norm will trace along the individual components of a vector rather than calculate the distance along the hypotenuse,</p>
+\[ \eta(x) = \sum_{i=1}^n \vert x_i \vert \,.\]
+<p><img src="/assets/l1-norm.png" alt="" /></p>
+<p>Therefore, by the \(\ell^1\) norm, the \((4, 3)\) vector has a length of \(4 + 3 = 7\).</p>
+<pre><code class="language-julia">l1_norm&#40;X&#41; &#61; &#91;abs&#40;x&#41; for x in X&#93; |&gt; sum
+
+l1_norm&#40;&#91;4 ; 3&#93;&#41;
+&gt; 7</code></pre>
+<h3 id="ell2_norm"><a href="#ell2_norm" class="header-anchor">\(\ell^2\) Norm</a></h3>
+<p>The \(\ell^2\) norm is for computing the length of a vector in \(n\)-dimensional space, defined as,</p>
+\[ \eta(x) = \lVert \mathbf{x} \rVert = \sqrt{x_1^2 + \cdots + x_n^2 }\,. \]
+<p>Notice that this is the same as the square root of the inner product of a vector with itself, \(\sqrt{\mathbf{x}\boldsymbol{\cdot} \mathbf{x}}\).</p>
+<p><img src="/assets/l2-norm.png" alt="" /></p>
+<p>By the \(\ell^2\) norm, the vector \((4, 3)\) has a length of \(\sqrt{3^2 + 4^2} = \sqrt{9 + 16} = \sqrt{25} = 5\).</p>
+<pre><code class="language-julia">l2_norm&#40;X&#41; &#61; &#91;x*x for x in X&#93; |&gt; sum |&gt; sqrt
+
+l2_norm&#40;&#91;4 ; 3&#93;&#41;
+&gt; 5.0</code></pre>
+<h3 id="ellp_norm"><a href="#ellp_norm" class="header-anchor">\(\ell^p\) Norm</a></h3>
+<p>The \(\ell^p\) norm is not actually a single norm, but a generalization of multiple norms.</p>
+\[\eta(x) = \lVert \mathbf{x} \rVert_p = \Big( \sum_{i=1}^n \vert x_i \vert^p \Big)^{1/p}\,.\]
+<p>It&#39;s trivial to see that when \(p = 1\), we get the \(\ell^1\) norm, when \(p = 2\), we get the \(\ell^2\) norm, and so on. When \(p\) approaches \(\infty\), then we get the <em>infinity norm</em> which is defined as,</p>
+\[\eta(x) = \lVert \mathbf{x} \rVert_\infty = \max_i \vert x_i \vert \,.\]
+<pre><code class="language-julia">l∞_norm&#40;X&#41; &#61; &#91;abs&#40;x&#41; for x in X&#93; |&gt; maximum
+
+l∞_norm&#40;&#91;4 ; 3&#93;&#41;
+&gt; 4</code></pre>
+<p>Therefore, we can write a generalized function to handle any \(\ell^p\) norm as follows.</p>
+<pre><code class="language-julia">function lp_norm&#40;X; p &#61; 1&#41;
+    if isinf&#40;p&#41;
+        &#91;abs&#40;x&#41; for x in X&#93; |&gt; maximum
+    else
+        &#40;&#91;abs&#40;x&#41;^p for x in X&#93; |&gt; sum&#41;^&#40;1/p&#41;
+    end
+end
+
+@testset &quot;ℓp Norms&quot; begin
+    X &#61; &#91; 4 ; 3 &#93;
+    @test lp_norm&#40;X&#41; &#61;&#61; 7.0
+    @test lp_norm&#40;X; p&#61;2&#41; &#61;&#61; 5.0
+    @test lp_norm&#40;X; p&#61;Inf&#41; &#61;&#61; 4.0
+end
+
+&gt;  Test Summary: | Pass  Total
+&gt;  ℓp Norms      |    3      3</code></pre>
+<p>Interestingly, as \(p\) approaches \(\infty\), the result of \(\eta_p(x)\) approaches a minimum. The minimum here is, in fact, the maximum, unsigned component of \(\mathbf{x}\).</p>
+<p>Looking at the \(p\) values of \(1\), \(2\), \(3\), \(5\), \(10\), and \(\infty\), for the \(2\)-dimensional vector, \((4, 3)\).</p>
+<p><img src="/assets/p-values.png" alt="" /></p>
+<p>Plotting the same \(p\) values for a \(5\)-dimensional vector, \((4, 3, -2, 3, 8)\).</p>
+<p><img src="/assets/dim5-p-values.png" alt="" /></p>
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: July 18, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

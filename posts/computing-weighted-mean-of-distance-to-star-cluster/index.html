@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+   <title>Null Maps</title>  
+</head>
+<body>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="post_title"><a href="#post_title" class="header-anchor">Computing Weighted Mean of Distance to Star Cluster</a></h1>
+<p>Astronomy, Astrophysics, and Cosmology are ever becoming fields rooted in data and computation. Since, unlikely other branches of physics, one is unable to easily perform experiments to verify results, it is common to leverage data science and statistics as well as build computational simulations.</p>
+<p>In this bite, I&#39;ll use the <code>CSV</code> and <code>DataFrames</code> packages to read observational data of stars proposed to be in the Starfish Cluster. Each row contains the visual magnitude, logarithmic luminosity, and probability of the star being in the aforementioned cluster. <em>The desired result is to determine the distance from Earth to the Starfish Cluster.</em></p>
+<p>Incorporating both \(m = -2.5\log_{10}\Big(\frac{F}{F_0}\Big)\) and \(F = \frac{L}{4\pi d^2}\), I&#39;ll compute the distances using the formula,</p>
+\[ \log_{10}(d) = m + \log_{10}\Big(\frac{L}{L_0}\Big) + 0.17 \,.\]
+<p>This will give us the distance in units of parsecs. When talking about things in our own solar system, we will often use the Astronomical Unit &#40;AU&#41; which is the distance from Earth to our sun, Sol. When we&#39;re talking about things in our galaxy, the Milky Way, we&#39;ll often use the Light Year &#40;ly&#41;, which is approximately \(63,241.1\) AU. Finally, when we&#39;re talking about objects in other galaxies or star groups, we&#39;ll generally use the Parsec &#40;pc&#41; which is approximately \(3.26\) ly. In Cosmology, since most objects we&#39;re working with are so, <em>astronomically</em> far away, we&#39;ll generally use the Megaparsec &#40;Mpc&#41; which is one-million Parsecs or \(3.26\) million light years. That&#39;s <em>really</em> far&#33;</p>
+<p>I&#39;ll use two sets, one where I&#39;ve filtered out the low-probability stars and compute the mean and then one where I compute the weighted mean of all the stars. I&#39;ll compare the two to see how close our computation is.</p>
+<p>First I&#39;ll compute the mean &quot;by hand&quot; or by manually iterating over each row without use of functions included in the <code>DataFrames</code> or statistics packages.</p>
+<pre><code class="language-julia">using CSV, DataFrames, StatsBase, Statistics
+using LinearAlgebra: dot
+
+const datapath &#61; &quot;/local/data/&quot;
+starfish_data &#61; joinpath&#40;datapath, &quot;Starfish_Data.csv&quot;&#41;
+
+df &#61; CSV.read&#40;starfish_data, DataFrame&#41;;
+# exclude low-probability stars
+high_prob_stars &#61; filter&#40;prob -&gt; prob.Prob &gt; 70, df&#41;;
+
+&#40;rows, _&#41; &#61; size&#40;df&#41;
+# all starfish star distances
+all_starfish_distances &#61; zeros&#40;rows&#41;
+for &#40;k, row&#41; in enumerate&#40;eachrow&#40;df&#41;&#41;
+    vmag, logl, prob &#61; row
+    all_starfish_distances&#91;k&#93; &#61; 10^&#40;1/5 * &#40;vmag &#43; 2.5*logl &#43; 0.17&#41;&#41;
+end
+
+all_wmean &#61; dot&#40;
+	all_starfish_distances, 
+	df&#91;:, 3&#93;/100&#41;/sum&#40;df&#91;:, 3&#93;/100&#41;;
+@show round&#40;all_wmean; digits&#61;4&#41;;
+&gt; round&#40;all_wmean; digits &#61; 4&#41; &#61; 1380.9686
+
+&#40;hp_rows, _&#41; &#61; size&#40;high_prob_stars&#41;
+# high probability starfish star distances
+hp_starfish_distances &#61; zeros&#40;hp_rows&#41;
+for &#40;k, row&#41; in enumerate&#40;eachrow&#40;high_prob_stars&#41;&#41;
+    vmag, logl, prob &#61; row
+    hp_starfish_distances&#91;k&#93; &#61; 10^&#40;1/5 * &#40;vmag &#43; 2.5*logl &#43; 0.17&#41;&#41;
+end
+
+hp_wmean &#61; dot&#40;
+	hp_starfish_distances, 
+	high_prob_stars&#91;:, 3&#93;/100&#41;/sum&#40;high_prob_stars&#91;:, 3&#93;/100&#41;;
+@show round&#40;hp_wmean; digits&#61;4&#41;;
+&gt; round&#40;hp_wmean; digits &#61; 4&#41; &#61; 1384.9069</code></pre>
+<p>Checking the known distance to the Starfish Cluster, it looks like the approximation of about \(1380\) parsecs is quite accurate.</p>
+<p>When I wrap each call in a <code>@time</code> call, we can see the time requirement.</p>
+<pre><code class="language-julia">&gt; round&#40;all_wmean; digits &#61; 4&#41; &#61; 1380.9686
+&gt;   0.000569 seconds &#40;2.41 k allocations: 108.484 KiB&#41;
+
+&gt; round&#40;hp_wmean; digits &#61; 4&#41; &#61; 1384.9069
+&gt;   0.074162 seconds &#40;305.37 k allocations: 16.432 MiB, 98.81&#37; compilation time&#41;</code></pre>
+<p>I&#39;ll also compute it using functionality from the <code>DataFrames</code> and <code>StatsBase</code> packages. Specifically, I&#39;ll write a function <code>weighted_mean</code> which will take a <code>DataFrame</code> object as input and will return the weighted mean to four digits. The function uses the <code>combine</code> function from the <code>DataFrames</code> package and the <code>fweights</code> function, for a weighted mean, from <code>StatsBase</code>.</p>
+<p>In the function, I initially compute the weighted average since it will be reused for each iteration and we don&#39;t need to re-compute it every time. Then we&#39;re &quot;combining&quot; all of the records using equation \((1)\). It is clearly much more compact and clean using the included functions.</p>
+<pre><code class="language-julia">using CSV, DataFrames, StatsBase, Statistics
+
+const datapath &#61; &quot;/local/usr&quot;
+starfish_data &#61; joinpath&#40;datapath, &quot;Starfish_Data.csv&quot;&#41;
+
+function weighted_mean&#40;df&#41;
+    df_fweights &#61; fweights&#40;df.Prob&#41;;
+    df_wm &#61; combine&#40;df, 
+        &#91;&quot;#Vmag&quot;, &quot;logL&quot;, &quot;Prob&quot;&#93; &#61;&gt; &#40;&#40;vmag, logl, prob&#41; -&gt; begin
+            mean&#40;10 .^&#40;1/5 * &#40;vmag .&#43; 2.5*logl .&#43; 0.17&#41;&#41;, df_fweights&#41;
+        end&#41; &#61;&gt; :weighted_mean&#41;
+    round&#40;df_wm&#91;:weighted_mean&#93; |&gt; first; digits&#61;4&#41;
+end
+
+df &#61; CSV.read&#40;starfish_data, DataFrame&#41;;
+@show weighted_mean&#40;df&#41;;
+&gt; weighted_mean&#40;df&#41; &#61; 1380.9686
+
+# exclude low-probability stars
+high_prob_stars &#61; filter&#40;prob -&gt; prob.Prob &gt; 70, df&#41;;
+@show weighted_mean&#40;high_prob_stars&#41;;
+&gt; weighted_mean&#40;high_prob_stars&#41; &#61; 1384.9069</code></pre>
+<p>Checking the time requirement again, I can see it actually takes quite a bit longer for the first computation than our manual approach. This is rarely the case, but makes the point of why it makes sense to always benchmark large computations. It appears that using the <code>combine</code> function has a bit more overhead. In this case, I am only processing around one-hundred records, so the clarity of the second approach is worthwhile to use here, but if we needed to run this for a much larger data set, it would be appropriate to use the first approach exclusively.</p>
+<pre><code class="language-julia">&gt; weighted_mean&#40;df&#41; &#61; 1380.9686
+&gt;   0.217225 seconds &#40;459.91 k allocations: 27.381 MiB, 3.73&#37; gc time, 99.60&#37; compilation time&#41;
+&gt; weighted_mean&#40;high_prob_stars&#41; &#61; 1384.9069
+&gt;   0.070481 seconds &#40;303.75 k allocations: 16.364 MiB, 99.41&#37; compilation time&#41;</code></pre>
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: June 19, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

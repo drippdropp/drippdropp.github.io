@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&family=Roboto+Slab:wght@400;500;700&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="/css/poole_hyde.css">
+<link rel="stylesheet" href="/css/nullmaps.css">
+<!-- style adjustments -->
+<style>
+  html {font-size: 17px;}
+  .franklin-content {position: relative; padding-left: 8%; padding-right: 5%; line-height: 1.35em;}
+  @media (min-width: 940px) {
+    .franklin-content {width: 100%; margin-left: auto; margin-right: auto;}
+  }
+  @media (max-width: 768px) {
+    .franklin-content {padding-left: 6%; padding-right: 6%;}
+  }
+</style>
+<link rel="icon" href="/assets/favicon.ico">
+
+  <title>Null Maps</title>
+</head>
+<body>
+<div class="sidebar sidebar-bg">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1><a href="/">Null Maps</a></h1>
+      <p class="lead">My Adventures in Math and Technology</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item " href="/">Home</a>
+      <a class="sidebar-nav-item " href="/posts/">Posts</a>
+      <a class="sidebar-nav-item " href="/projects/">Projects</a>
+      <a class="sidebar-nav-item " href="/about/">About</a>
+    </nav>
+    <p>&copy; Daniel Marvin.</p>
+  </div>
+</div>
+<div class="content container">
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="post_title"><a href="#post_title" class="header-anchor">Leveraging the Type System</a></h1>
+<p>The Type System is really powerful and can be used to make code much more clean and maintainable.</p>
+<p>In this example, I&#39;ve created an abstract type <code>TempUnit</code> to represent temperature units, specifically Fahrenheit and Celcius. I&#39;ve then created two structs for <code>Fahrenheit</code> and <code>Celcius</code> which just have one field, <code>deg</code> to store the degree values for each.</p>
+<pre><code class="language-julia">abstract type TempUnit end
+
+struct Fahrenheit &lt;: TempUnit
+    deg::Float64
+end
+
+struct Celcius &lt;: TempUnit
+    deg::Float64
+end</code></pre>
+<p>For a conversion function, one may consider having a function which would take the type to convert to and then the value we want to convert, but the following approach is much cleaner.</p>
+<p>We start off with a function which says if the target type is the same as the value we&#39;re trying to convert, then we just return the value provided as an argument. This is also why we needed the abstract type which both <code>Fahrenheit</code> and <code>Celcius</code> are subtypes of. This ensures we don&#39;t impact any other types, but this code is uniquely working with the temperature unit types we&#39;ve built today.</p>
+<pre><code class="language-julia">function convert&#40;::Type&#123;T&#125;, deg::T&#41; where &#123;T &lt;: TempUnit&#125;
+    return deg
+end</code></pre>
+<p>Next, I&#39;ve written one function for converting fahrenheit and a second function for converting celcius. Because we&#39;ve set the type constraint in the function definition itself, we know we are only working within a specific context.</p>
+<pre><code class="language-julia">function convert&#40;::Type&#123;Fahrenheit&#125;, deg::Celcius&#41;
+    Fahrenheit&#40;9/5 * deg.deg &#43; 32.0&#41;
+end
+
+function convert&#40;::Type&#123;Celcius&#125;, deg::Fahrenheit&#41;
+    Celcius&#40;5/9 * &#40;deg.deg - 32.0&#41;&#41;
+end</code></pre>
+<p>And we test them out...</p>
+<pre><code class="language-julia">boiling &#61; Fahrenheit&#40;212.0&#41;
+freezing &#61; Celcius&#40;0.0&#41;
+
+@show convert&#40;Celcius, freezing&#41;
+&gt; convert&#40;Celcius, freezing&#41; &#61; Celcius&#40;0.0&#41;
+
+@show convert&#40;Fahrenheit, boiling&#41;
+&gt; convert&#40;Fahrenheit, boiling&#41; &#61; Fahrenheit&#40;212.0&#41;
+
+@show convert&#40;Fahrenheit, freezing&#41;
+&gt; convert&#40;Fahrenheit, freezing&#41; &#61; Fahrenheit&#40;32.0&#41;
+
+@show convert&#40;Celcius, boiling&#41;
+&gt; convert&#40;Celcius, boiling&#41; &#61; Celcius&#40;100.0&#41;</code></pre>
+<p>Adding Kelvin is simple enough too.</p>
+<pre><code class="language-julia">struct Kelvin &lt;: TempUnit
+    n::Float64
+end
+
+function convert&#40;::Type&#123;Celcius&#125;, n::Kelvin&#41;
+    Celcius&#40;n.n - 273.15&#41;
+end
+
+function convert&#40;::Type&#123;Kelvin&#125;, deg::Celcius&#41;
+    Kelvin&#40;deg.deg &#43; 273.15&#41;
+end
+
+absolutezero &#61; Kelvin&#40;0.0&#41;
+
+@show convert&#40;Celcius, absolutezero&#41;
+&gt; convert&#40;Celcius, absolutezero&#41; &#61; Celcius&#40;-273.15&#41;</code></pre>
+<p>A little bit of clean up and adding of additional computational functionality.</p>
+<pre><code class="language-julia">abstract type TempUnit end
+
+struct Fahrenheit &lt;: TempUnit
+    v::Float64
+end
+
+struct Celcius &lt;: TempUnit
+    v::Float64
+end
+
+struct Kelvin &lt;: TempUnit
+    v::Float64
+end
+
+# temperature conversion functions
+import Base.convert
+convert&#40;::Type&#123;T&#125;, deg::T&#41; where &#123;T &lt;: TempUnit&#125; &#61; deg
+convert&#40;::Type&#123;Fahrenheit&#125;, deg::Celcius&#41; &#61; Fahrenheit&#40;9/5 * deg.v &#43; 32.0&#41;
+convert&#40;::Type&#123;Celcius&#125;, deg::Fahrenheit&#41; &#61; Celcius&#40;5/9 * &#40;deg.v - 32.0&#41;&#41;
+convert&#40;::Type&#123;Celcius&#125;, n::Kelvin&#41; &#61; Celcius&#40;n.v - 273.15&#41;
+convert&#40;::Type&#123;Kelvin&#125;, deg::Celcius&#41; &#61; Kelvin&#40;deg.v &#43; 273.15&#41;
+
+import Base.:&#43;, Base.:-, Base.:*, Base.:/
+
+Base.:&#43;&#40;a::T, b::S&#41; where &#123;T &lt;: Number, S &lt;: TempUnit&#125; &#61; S&#40;a &#43; b.v&#41;
+Base.:&#43;&#40;a::S, b::T&#41; where &#123;T &lt;: Number, S &lt;: TempUnit&#125; &#61; S&#40;a.v &#43; b&#41;
+Base.:-&#40;a::T, b::S&#41; where &#123;T &lt;: Number, S &lt;: TempUnit&#125; &#61; S&#40;a - b.v&#41;
+Base.:-&#40;a::S, b::T&#41; where &#123;T &lt;: Number, S &lt;: TempUnit&#125; &#61; S&#40;a.v - b&#41;
+Base.:*&#40;a::T, b::S&#41; where &#123;T &lt;: Number, S &lt;: TempUnit&#125; &#61; S&#40;a * b.v&#41;
+Base.:*&#40;a::S, b::T&#41; where &#123;T &lt;: Number, S &lt;: TempUnit&#125; &#61; S&#40;a.v * b&#41;
+Base.:/&#40;a::T, b::S&#41; where &#123;T &lt;: Number, S &lt;: TempUnit&#125; &#61; S&#40;a / b.v&#41;
+Base.:/&#40;a::S, b::T&#41; where &#123;T &lt;: Number, S &lt;: TempUnit&#125; &#61; S&#40;a.v / b&#41;
+
+@testset &quot;temperature conversions&quot; begin
+    boiling &#61; Fahrenheit&#40;212.0&#41;
+    freezing &#61; Celcius&#40;0.0&#41;
+    absolutezero &#61; Kelvin&#40;0.0&#41;
+    
+    @test convert&#40;Celcius, freezing&#41; &#61;&#61; Celcius&#40;0.0&#41;
+    @test convert&#40;Celcius, boiling&#41; &#61;&#61; Celcius&#40;100.0&#41;
+    @test convert&#40;Fahrenheit, boiling&#41; &#61;&#61; Fahrenheit&#40;212.0&#41;
+    @test convert&#40;Fahrenheit, freezing&#41; &#61;&#61; Fahrenheit&#40;32.0&#41;
+    @test convert&#40;Celcius, absolutezero&#41; &#61;&#61; Celcius&#40;-273.15&#41;
+end
+
+@testset &quot;temperature struct computations&quot; begin
+    @test Celcius&#40;0.0&#41; &#43; 4.0 &#61;&#61; Celcius&#40;4.0&#41;
+    @test Celcius&#40;2.0&#41; * 2 &#61;&#61; Celcius&#40;4.0&#41;
+end</code></pre>
+<div class="page-foot">
+  <div class="copyright">
+    &copy; Daniel Marvin. Last modified: June 29, 2021.
+  </div>
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div>  <!-- div: content container -->
+    
+        
+
+
+
+    
+    
+        <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>
