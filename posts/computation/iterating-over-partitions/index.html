@@ -47,7 +47,7 @@
 
 <!-- Content appended here -->
 <div class="franklin-content"><h1 id="post_title"><a href="#post_title" class="header-anchor">Iterating Over Partitions</a></h1>
-<p>Suppose we have <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi></mrow><annotation encoding="application/x-tex">t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.61508em;vertical-align:0em;"></span><span class="mord mathnormal">t</span></span></span></span> threads to use and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi></mrow><annotation encoding="application/x-tex">i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.65952em;vertical-align:0em;"></span><span class="mord mathnormal">i</span></span></span></span> total items to process. We may want to partition our total items to be processed into <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mi mathvariant="normal">/</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">i / t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">i</span><span class="mord">/</span><span class="mord mathnormal">t</span></span></span></span> batches so each batch is handled individually by a single thread. </p>
+<p>Suppose we have \(t\) threads to use and \(i\) total items to process. We may want to partition our total items to be processed into \(i / t\) batches so each batch is handled individually by a single thread. </p>
 <p>More concretely, suppose that we have 4 threads and need to process 1000 items. Each batch contains 250 items. With 1-indexing, we want our partitions to run from 1 to 250, 251 to 500, 501 to 750, and 751 to 1000.</p>
 <pre><code class="language-julia">threadcount &#61; Threads.nthreads&#40;&#41;
 items &#61; 10_000
@@ -65,15 +65,15 @@ end
 &gt; 7501-10000</code></pre>
 <div class="page-foot">
   <div class="copyright">
-    &copy; Daniel Marvin. Last modified: June 29, 2021.
+    &copy; Daniel Marvin. Last modified: August 02, 2021.
   </div>
 </div>
 </div><!-- CONTENT ENDS HERE -->
     </div>  <!-- div: content container -->
     
-        
-
-
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
 
     
     

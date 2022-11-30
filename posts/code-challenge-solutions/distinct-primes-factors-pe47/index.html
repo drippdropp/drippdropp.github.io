@@ -50,7 +50,7 @@
 <p>On <a href="https://projecteuler.net/">Project Euler</a>, the <a href="https://projecteuler.net/problem&#61;47">47th problem</a> is called <em>Distinct Primes Factors</em>.</p>
 <p>This is a good example of why Number Theory is considered to be a bit silly at times. We are looking at the first two consecutive numbers with two distinct prime factors. Then the first three consecutive numbers with three distinct prime factors. Our task here is to find the first four consecutive numbers with four prime factors.</p>
 <p>We&#39;ll rely on the <a href="/posts/mathematics/fundamental-theorem-of-arithmetic/">Fundamental Theorem of Arithmetic</a> since we know that for every composite number, there must be a unique product of prime powers.</p>
-<p>Since I know this pattern must exist, I can just write some code to just keep processing until we find it. We&#39;ll start from the first distinct combination of four primes, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>⋅</mo><mn>3</mn><mo>⋅</mo><mn>5</mn><mo>⋅</mo><mn>7</mn></mrow><annotation encoding="application/x-tex">2 \cdot 3 \cdot 5 \cdot 7</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">3</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">5</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">7</span></span></span></span>.</p>
+<p>Since I know this pattern must exist, I can just write some code to just keep processing until we find it. We&#39;ll start from the first distinct combination of four primes, \(2 \cdot 3 \cdot 5 \cdot 7\).</p>
 <pre><code class="language-julia">using Primes
 
 function countfactors&#40;N&#41;
@@ -71,15 +71,15 @@ end
 &gt; 134043</code></pre>
 <div class="page-foot">
   <div class="copyright">
-    &copy; Daniel Marvin. Last modified: July 22, 2021.
+    &copy; Daniel Marvin. Last modified: August 02, 2021.
   </div>
 </div>
 </div><!-- CONTENT ENDS HERE -->
     </div>  <!-- div: content container -->
     
-        
-
-
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
 
     
     

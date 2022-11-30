@@ -1,4 +1,4 @@
-Sitemap: https://drippdropp.github.io/NullMaps/sitemap.xml
+Sitemap: https://nullmap.org/sitemap.xml
 
 User-agent: *
 Disallow:

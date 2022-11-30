@@ -51,9 +51,9 @@
 <p>&quot;Let d&#40;n&#41; be defined as the sum of proper divisors of n &#40;numbers less than n which divide evenly into n&#41;. If d&#40;a&#41; &#61; b and d&#40;b&#41; &#61; a, where a ≠ b, then a and b are an amicable pair and each of a and b are called amicable numbers.</p>
 <p>For example, the proper divisors of 220 are 1, 2, 4, 5, 10, 11, 20, 22, 44, 55 and 110; therefore d&#40;220&#41; &#61; 284. The proper divisors of 284 are 1, 2, 4, 71 and 142; so d&#40;284&#41; &#61; 220.</p>
 <p>Evaluate the sum of all the amicable numbers under 10000.&quot;</p>
-<p>I&#39;ll first define a function, \(d(n)\).</p>
+<p>I&#39;ll first define a function, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">d(n)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">d</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span>.</p>
 <pre><code class="language-julia">d&#40;n&#41; &#61; &#91; k for k in 1:n-1 if n &#37; k &#61;&#61; 0 &#93; |&gt; sum</code></pre>
-<p>Next, we&#39;ll need some driver code to check all of the numbers under \(10,000\).</p>
+<p>Next, we&#39;ll need some driver code to check all of the numbers under <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>10</mn><mo separator="true">,</mo><mn>000</mn></mrow><annotation encoding="application/x-tex">10,000</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8388800000000001em;vertical-align:-0.19444em;"></span><span class="mord">10</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">000</span></span></span></span>.</p>
 <pre><code class="language-julia">N &#61; 10_000
 checked &#61; falses&#40;3N&#41;
 pairs &#61; Pair&#123;Int, Int&#125;&#91;&#93;
@@ -73,19 +73,19 @@ reduce&#40;&#40;acc, iter&#41; -&gt; acc &#43; iter&#91;1&#93; &#43; iter&#91;2&
 &gt;   0.209513 seconds &#40;146.66 k allocations: 8.028 MiB, 3.76&#37; gc time, 6.53&#37; compilation time&#41;
 &gt; 
 &gt;  31626</code></pre>
-<p>In this code snippet, we create an array of booleans using <code>falses</code> so we can avoid double checking numbers we&#39;ve already checked. If the <code>checked</code> array shows a number hasn&#39;t yet been checked, then we check to see if \(d(a) = d(b)\) where \(a \neq b\). If both criteria pass, then we add the pair into our array of pairs.</p>
+<p>In this code snippet, we create an array of booleans using <code>falses</code> so we can avoid double checking numbers we&#39;ve already checked. If the <code>checked</code> array shows a number hasn&#39;t yet been checked, then we check to see if <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mo stretchy="false">(</mo><mi>a</mi><mo stretchy="false">)</mo><mo>=</mo><mi>d</mi><mo stretchy="false">(</mo><mi>b</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">d(a) = d(b)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">d</span><span class="mopen">(</span><span class="mord mathnormal">a</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">d</span><span class="mopen">(</span><span class="mord mathnormal">b</span><span class="mclose">)</span></span></span></span> where <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo mathvariant="normal">≠</mo><mi>b</mi></mrow><annotation encoding="application/x-tex">a \neq b</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord mathnormal">a</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel"><span class="mrel"><span class="mord vbox"><span class="thinbox"><span class="rlap"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="inner"><span class="mord"><span class="mrel"></span></span></span><span class="fix"></span></span></span></span></span><span class="mrel">=</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathnormal">b</span></span></span></span>. If both criteria pass, then we add the pair into our array of pairs.</p>
 <p>Finally, we use the <code>reduce</code> function to sum them up yielding the final result.</p>
 <div class="page-foot">
   <div class="copyright">
-    &copy; Daniel Marvin. Last modified: June 26, 2021.
+    &copy; Daniel Marvin. Last modified: July 01, 2021.
   </div>
 </div>
 </div><!-- CONTENT ENDS HERE -->
     </div>  <!-- div: content container -->
     
-        <script src="/libs/katex/katex.min.js"></script>
-<script src="/libs/katex/auto-render.min.js"></script>
-<script>renderMathInElement(document.body)</script>
+        
+
+
 
     
     

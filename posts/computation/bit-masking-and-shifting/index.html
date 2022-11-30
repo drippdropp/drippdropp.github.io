@@ -78,9 +78,9 @@ bitcontext &#61; zip&#40;bitmasks, bitshifts&#41; |&gt; collect
 <pre><code class="language-julia">function extractpixel&#40;pix&#41;
     map&#40;x -&gt; UInt8&#40;&#40;pix &amp; x&#91;1&#93;&#41; &gt;&gt; x&#91;2&#93;&#41;, bitcontext&#41;
 end</code></pre>
-<p>We first perform a bit and operation between <code>0xff0b0c0e</code> and <code>0x000000ff</code> which yields <code>0x0000000e</code>. We finally shift it by <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn></mrow><annotation encoding="application/x-tex">0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">0</span></span></span></span> since we&#39;re already in the lowest bit position.</p>
+<p>We first perform a bit and operation between <code>0xff0b0c0e</code> and <code>0x000000ff</code> which yields <code>0x0000000e</code>. We finally shift it by \(0\) since we&#39;re already in the lowest bit position.</p>
 <p>In general though, we will perform a bit and operation followed by a shift.</p>
-<p><code>&#40;0xff0b0c0e &amp; 0x00ff0000&#41;</code> will yield <code>0x000b0000</code>. But we want the <code>0b</code> moved to the right-most position, so we need to shift by <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>16</mn></mrow><annotation encoding="application/x-tex">16</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">16</span></span></span></span> bits, <code>0x000b0000 &gt;&gt; 16</code>.</p>
+<p><code>&#40;0xff0b0c0e &amp; 0x00ff0000&#41;</code> will yield <code>0x000b0000</code>. But we want the <code>0b</code> moved to the right-most position, so we need to shift by \(16\) bits, <code>0x000b0000 &gt;&gt; 16</code>.</p>
 <pre><code class="language-julia">extractpixel&#40;imgbits&#91;1,1&#93;&#41;
 &gt; 4-element Vector&#123;UInt8&#125;:
 &gt;  0x0e
@@ -89,15 +89,15 @@ end</code></pre>
 &gt;  0xff</code></pre>
 <div class="page-foot">
   <div class="copyright">
-    &copy; Daniel Marvin. Last modified: June 26, 2021.
+    &copy; Daniel Marvin. Last modified: August 02, 2021.
   </div>
 </div>
 </div><!-- CONTENT ENDS HERE -->
     </div>  <!-- div: content container -->
     
-        
-
-
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
 
     
     

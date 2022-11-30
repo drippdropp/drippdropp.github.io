@@ -47,8 +47,8 @@
 
 <!-- Content appended here -->
 <div class="franklin-content"><h1 id="cross_product"><a href="#cross_product" class="header-anchor">Cross Product</a></h1>
-<p>The cross product, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="bold">u</mi><mo>×</mo><mi mathvariant="bold">v</mi></mrow><annotation encoding="application/x-tex">\mathbf{u} \times \mathbf{v}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord mathbf">u</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.44444em;vertical-align:0em;"></span><span class="mord mathbf" style="margin-right:0.01597em;">v</span></span></span></span>, is defined as,</p>
-<span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi mathvariant="bold">u</mi><mo>×</mo><mi mathvariant="bold">v</mi><mo>=</mo><mi mathvariant="normal">∣</mi><mi mathvariant="bold">u</mi><mi mathvariant="normal">∣</mi><mi mathvariant="normal">∣</mi><mi mathvariant="bold">v</mi><mi mathvariant="normal">∣</mi><mi>sin</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>θ</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex"> \mathbf{u} \times \mathbf{v} = |\mathbf{u}||\mathbf{v}| \sin(\theta)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord mathbf">u</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.44444em;vertical-align:0em;"></span><span class="mord mathbf" style="margin-right:0.01597em;">v</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">∣</span><span class="mord mathbf">u</span><span class="mord">∣∣</span><span class="mord mathbf" style="margin-right:0.01597em;">v</span><span class="mord">∣</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mop">sin</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.02778em;">θ</span><span class="mclose">)</span></span></span></span></span>
+<p>The cross product, \(\mathbf{u} \times \mathbf{v}\), is defined as,</p>
+\[ \mathbf{u} \times \mathbf{v} = |\mathbf{u}||\mathbf{v}| \sin(\theta)\]
 <pre><code class="language-julia">function ×&#40;u::Vector, v::Vector&#41;
     @assert length&#40;u&#41; &#61;&#61; length&#40;v&#41; &#61;&#61; 3
     Vector&#123;eltype&#40;u&#41;&#125;&#40;&#91;
@@ -62,15 +62,15 @@ end
 &gt; &#91;1; 0; 0&#93; × &#91;0; 1; 0&#93; &#61; &#91;0, 0, 1&#93;</code></pre>
 <div class="page-foot">
   <div class="copyright">
-    &copy; Daniel Marvin. Last modified: June 19, 2021.
+    &copy; Daniel Marvin. Last modified: August 02, 2021.
   </div>
 </div>
 </div><!-- CONTENT ENDS HERE -->
     </div>  <!-- div: content container -->
     
-        
-
-
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
 
     
     
